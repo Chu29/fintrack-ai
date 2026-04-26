@@ -1,0 +1,87 @@
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
+import LocalMoviesRoundedIcon from '@mui/icons-material/LocalMoviesRounded'
+import LocalGasStationRoundedIcon from '@mui/icons-material/LocalGasStationRounded'
+import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import { cx, dashboardStyles as ui } from '../dashboardStyles'
+
+const iconMap = {
+  cart: ShoppingCartRoundedIcon,
+  movies: LocalMoviesRoundedIcon,
+  fuel: LocalGasStationRoundedIcon,
+  income: PaymentsRoundedIcon,
+}
+
+const TransactionsTable = ({ items }) => {
+  return (
+    <section className={cx(ui.surface.card, 'relative p-5 pb-24 sm:p-6 sm:pb-24')}>
+      <div className={ui.layout.between}>
+        <h2 className={ui.text.sectionTitle}>Recent Transactions</h2>
+        <button type="button" className={ui.action.link}>
+          View All
+        </button>
+      </div>
+
+      <div className="mt-6 hidden grid-cols-[minmax(0,1.8fr)_120px_120px] gap-4 border-b border-white/6 pb-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-slate-500 md:grid">
+        <span>Transaction</span>
+        <span>Date</span>
+        <span className="text-right">Amount</span>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        {items.map((item) => {
+          const Icon = iconMap[item.icon]
+          const isIncome = item.type === 'income'
+
+          return (
+            <div
+              key={`${item.merchant}-${item.dateLabel}`}
+              className={cx(
+                ui.surface.inner,
+                ui.surface.cardHover,
+                'grid gap-4 px-3.5 py-3 md:grid-cols-[minmax(0,1.8fr)_120px_120px] md:items-center',
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${
+                    isIncome
+                      ? 'bg-dashboard-income-bg text-dashboard-accent'
+                      : 'bg-dashboard-expense-bg text-dashboard-accent'
+                  }`}
+                >
+                  <Icon fontSize="small" />
+                </span>
+
+                <div className="min-w-0">
+                  <p className={cx(ui.text.label, 'truncate')}>{item.merchant}</p>
+                  <p className={cx(ui.text.overlineWide, 'mt-1')}>{item.category}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-400 md:text-sm">{item.dateLabel}</p>
+
+              <p
+                className={`text-sm font-bold md:text-right ${
+                  isIncome ? 'text-dashboard-accent' : 'text-slate-300'
+                }`}
+              >
+                {item.amount}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+
+      <button
+        type="button"
+        className={cx(ui.action.fab, 'absolute bottom-6 right-6')}
+        aria-label="Add transaction"
+      >
+        <AddRoundedIcon />
+      </button>
+    </section>
+  )
+}
+
+export default TransactionsTable
