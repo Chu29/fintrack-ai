@@ -1,43 +1,21 @@
 import { cx, appStyles as ui } from '../../_components/appStyles'
-
-const CHART_WIDTH = 760
-const CHART_HEIGHT = 300
-const CHART_PADDING_X = 28
-const CHART_PADDING_Y = 30
-
-const getCoordinates = (series) => {
-  const maxValue = Math.max(...series)
-  const minValue = Math.min(...series)
-  const range = Math.max(maxValue - minValue, 1)
-  const usableWidth = CHART_WIDTH - CHART_PADDING_X * 2
-  const usableHeight = CHART_HEIGHT - CHART_PADDING_Y * 2
-
-  return series.map((value, index, all) => ({
-    x: CHART_PADDING_X + (usableWidth / (all.length - 1)) * index,
-    y:
-      CHART_HEIGHT -
-      CHART_PADDING_Y -
-      ((value - minValue) / range) * usableHeight,
-  }))
-}
-
-const buildCurvePath = (points) =>
-  points.reduce((path, point, index, allPoints) => {
-    if (index === 0) {
-      return `M ${point.x} ${point.y}`
-    }
-
-    const previousPoint = allPoints[index - 1]
-    const controlPointX = (previousPoint.x + point.x) / 2
-
-    return `${path} C ${controlPointX} ${previousPoint.y}, ${controlPointX} ${point.y}, ${point.x} ${point.y}`
-  }, '')
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 const SpendingComparisonChart = ({ months, actual, budget }) => {
-  const actualPoints = getCoordinates(actual)
-  const budgetPoints = getCoordinates(budget)
-  const actualPath = buildCurvePath(actualPoints)
-  const budgetPath = buildCurvePath(budgetPoints)
+  const chartData = months.map((month, index) => ({
+    month,
+    actual: actual[index],
+    budget: budget[index],
+  }))
 
   return (
     <section className={cx(ui.surface.elevated)}>
@@ -61,49 +39,50 @@ const SpendingComparisonChart = ({ months, actual, budget }) => {
         </div>
       </div>
 
-      <div className="relative mt-8">
-        <div className="pointer-events-none absolute inset-0 grid grid-rows-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="border-t border-dashboard-border" />
-          ))}
-        </div>
-
-        <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-70 w-full">
-          <path
-            d={budgetPath}
-            fill="none"
-            stroke="var(--color-dashboard-amber-text)"
-            strokeLinecap="round"
-            strokeWidth="3"
-            opacity="0.55"
-            strokeDasharray="7 10"
-          />
-          <path
-            d={actualPath}
-            fill="none"
-            stroke="var(--color-dashboard-accent)"
-            strokeLinecap="round"
-            strokeWidth="4"
-          />
-
-          {actualPoints.map((point, index) => (
-            <g key={months[index]}>
-              <circle cx={point.x} cy={point.y} r="6" fill="white" />
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="3"
-                fill="var(--color-dashboard-accent)"
-              />
-            </g>
-          ))}
-        </svg>
-
-        <div className="mt-3 grid grid-cols-6 text-[0.62rem] font-bold uppercase tracking-[0.22em] text-slate-500">
-          {months.map((month) => (
-            <span key={month}>{month}</span>
-          ))}
-        </div>
+      <div className="mt-6 h-72">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+            <CartesianGrid stroke="var(--color-dashboard-border)" vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: 'var(--color-dashboard-secondary)', fontSize: 11, fontWeight: 500 }}
+            />
+            <YAxis hide />
+            <Tooltip
+              cursor={{ stroke: 'var(--color-dashboard-border)' }}
+              contentStyle={{
+                borderRadius: 10,
+                border: '1px solid var(--color-dashboard-border)',
+                fontSize: '12px',
+              }}
+            />
+            <Legend
+              verticalAlign="top"
+              height={20}
+              wrapperStyle={{ fontSize: '11px', fontWeight: 500, color: 'var(--color-dashboard-secondary)' }}
+            />
+            <Line
+              type="monotone"
+              dataKey="actual"
+              name="Actual"
+              stroke="var(--color-dashboard-accent)"
+              strokeWidth={3}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="budget"
+              name="Budget"
+              stroke="var(--color-dashboard-secondary)"
+              strokeDasharray="6 6"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </section>
   )
