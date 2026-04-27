@@ -16,7 +16,7 @@ const iconMap = {
 
 const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
   return (
-    <aside className="fixed left-0 top-0 z-20 hidden h-screen w-[210px] border-r border-white/10 bg-dashboard-sidebar px-4 py-6 xl:flex">
+    <aside className="fixed left-0 top-0 z-20 hidden h-screen w-52.5 border-r border-white/10 bg-dashboard-sidebar px-4 py-6 xl:flex">
       <div className="flex h-full w-full flex-col gap-6">
         <div>
           <p className={ui.text.brand}>FinTrack AI</p>
@@ -44,7 +44,7 @@ const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
               >
                 <span
                   className={cx(
-                    'absolute inset-y-1 left-0 w-[3px] origin-left rounded-r bg-dashboard-accent transition duration-200',
+                    'absolute inset-y-1 left-0 w-0.75 origin-left rounded-r bg-dashboard-accent transition duration-200',
                     item.active ? 'scale-100 opacity-100' : 'scale-0 opacity-0',
                   )}
                   aria-hidden="true"

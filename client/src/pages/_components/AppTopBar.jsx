@@ -9,7 +9,7 @@ const AppTopBar = ({ profile, pageTitle = 'Dashboard' }) => {
   }).format(new Date())
 
   return (
-    <header className="border-b border-dashboard-border bg-white px-6 py-3.5 xl:ml-[210px]">
+    <header className="border-b border-dashboard-border bg-white px-6 py-3.5 xl:ml-52.5">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-[15px] font-semibold text-dashboard-ink">{pageTitle}</h1>
         <div className="flex items-center gap-3">
