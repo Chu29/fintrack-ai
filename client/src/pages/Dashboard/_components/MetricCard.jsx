@@ -10,7 +10,7 @@ const MetricCard = ({ title, value, note, tone, progress, progressLabel }) => {
 
       {typeof progress === 'number' ? (
         <div className="mt-5 space-y-2">
-          <div className="h-1.5 rounded-full bg-slate-800">
+          <div className="h-1.5 rounded-full bg-dashboard-control">
             <div
               className="h-full rounded-full bg-linear-to-r from-dashboard-accent to-dashboard-progress-end"
               style={{ width: `${progress}%` }}
