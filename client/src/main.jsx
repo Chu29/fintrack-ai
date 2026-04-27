@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import AddExpense from './pages/AddExpense/AddExpense.jsx'
 import Categories from './pages/Categories/Categories.jsx'
 import Reports from './pages/Reports/Reports.jsx'
+import Settings from './pages/Settings/Settings.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
