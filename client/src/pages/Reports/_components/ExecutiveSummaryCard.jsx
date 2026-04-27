@@ -8,7 +8,7 @@ const toneClasses = {
 
 const ExecutiveSummaryCard = ({ eyebrow, status, insight, performance, recommendation }) => {
   return (
-    <section className={cx(ui.surface.card, 'p-6')}>
+    <section className={cx(ui.surface.card)}>
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-3">

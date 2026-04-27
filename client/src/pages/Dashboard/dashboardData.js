@@ -1,3 +1,10 @@
+export const balanceSummary = {
+  total: '$142,580.00',
+  income: '$12,400',
+  expenses: '$4,820',
+  savings: '$7,580',
+}
+
 export const statCards = [
   {
     title: 'Total Net Worth',
@@ -8,14 +15,14 @@ export const statCards = [
   {
     title: 'Monthly Income',
     value: '$12,400',
-    progress: 75,
-    progressLabel: '75% of target',
+    note: '+8.1% from last month',
+    tone: 'positive',
   },
   {
     title: 'Total Expenses',
     value: '$4,820',
-    note: 'Stable vs last week',
-    tone: 'neutral',
+    note: '+3.2% from last month',
+    tone: 'negative',
   },
 ]
 

@@ -40,7 +40,7 @@ const SpendingComparisonChart = ({ months, actual, budget }) => {
   const budgetPath = buildCurvePath(budgetPoints)
 
   return (
-    <section className={cx(ui.surface.elevated, 'p-6')}>
+    <section className={cx(ui.surface.elevated)}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className={ui.text.featureTitle}>Actual vs Budget Spending</h2>
@@ -68,7 +68,7 @@ const SpendingComparisonChart = ({ months, actual, budget }) => {
           ))}
         </div>
 
-        <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-[280px] w-full">
+        <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-70 w-full">
           <path
             d={budgetPath}
             fill="none"

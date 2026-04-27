@@ -44,7 +44,7 @@ const SpendingChart = ({ series }) => {
   const path = buildCurvePath(coordinates)
 
   return (
-    <section className={cx(ui.surface.elevated, 'p-5 sm:p-6')}>
+    <section className={cx(ui.surface.elevated)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className={ui.text.featureTitle}>Monthly Spending Trends</h2>

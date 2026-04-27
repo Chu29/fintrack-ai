@@ -10,7 +10,7 @@ const ReceiptIntelligencePanel = ({
   statusDetail,
 }) => {
   return (
-    <aside className={cx(ui.surface.elevated, 'p-6')}>
+    <aside className={cx(ui.surface.elevated)}>
       <div className={ui.layout.row}>
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-dashboard-accent/12 text-dashboard-accent">
           <CameraAltRoundedIcon fontSize="small" />

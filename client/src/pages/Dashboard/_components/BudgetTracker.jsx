@@ -1,36 +1,28 @@
 import { cx, dashboardStyles as ui } from '../dashboardStyles'
 
-const BudgetRing = ({ progress, accent }) => {
-  return (
-    <div
-      className="relative h-14 w-14 rounded-full"
-      style={{
-        background: `conic-gradient(${accent} 0% ${progress}%, rgba(148, 163, 184, 0.12) ${progress}% 100%)`,
-      }}
-    >
-      <div className="absolute inset-[5px] rounded-full bg-dashboard-ring-inner" />
-      <div className="absolute inset-0 flex items-center justify-center text-[0.62rem] font-bold text-slate-600">
-        {progress}%
-      </div>
-    </div>
-  )
-}
-
 const BudgetTracker = ({ items }) => {
   return (
-    <section className={cx(ui.surface.card, 'p-5')}>
-      <h2 className={ui.text.sectionTitle}>Budget Tracking</h2>
+    <section className={cx(ui.surface.card)}>
+      <h2 className={ui.text.sectionTitle}>Spending Breakdown</h2>
 
-      <div className="mt-5 space-y-4">
+      <div className="mt-4 space-y-4">
         {items.map((item) => (
-          <div key={item.label} className={cx(ui.surface.inner, ui.layout.row, 'gap-4 px-3.5 py-3')}>
-            <BudgetRing progress={item.progress} accent={item.accent} />
-            <div>
+          <div key={item.label} className="space-y-2">
+            <div className="flex items-center justify-between gap-3">
               <p className={ui.text.label}>{item.label}</p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="text-[13px] font-medium text-dashboard-ink">
                 {item.spent} / {item.limit}
               </p>
             </div>
+            <div className="h-1.25 rounded-[99px] bg-slate-200">
+              <div
+                className="h-full rounded-[99px]"
+                style={{ width: `${item.progress}%`, backgroundColor: item.accent }}
+              />
+            </div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary">
+              {item.progress}% of budget used
+            </p>
           </div>
         ))}
       </div>

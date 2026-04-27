@@ -28,7 +28,7 @@ const Settings = () => {
           <div className="h-4 rounded-full bg-slate-100" />
         </header>
 
-        <section className={cx(ui.surface.elevated, 'p-6')}>
+        <section className={cx(ui.surface.elevated)}>
           <div className="mb-5">
             <h2 className={ui.text.sectionTitle}>Personal Identity</h2>
             <p className={ui.text.muted}>Manage your digital presence and curator credentials.</p>
@@ -70,7 +70,7 @@ const Settings = () => {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <article className={cx(ui.surface.elevated, 'space-y-5 p-6')}>
+          <article className={cx(ui.surface.elevated, 'space-y-5')}>
             <div className="flex items-center gap-2.5">
               <PaletteRoundedIcon className="text-dashboard-accent" fontSize="small" />
               <h3 className={ui.text.sectionTitle}>Aesthetic & Interface</h3>
@@ -117,7 +117,7 @@ const Settings = () => {
             </div>
           </article>
 
-          <article className={cx(ui.surface.elevated, 'space-y-5 p-6')}>
+          <article className={cx(ui.surface.elevated, 'space-y-5')}>
             <div className="flex items-center gap-2.5">
               <SyncRoundedIcon className="text-dashboard-accent" fontSize="small" />
               <h3 className={ui.text.sectionTitle}>Ledger Synchronization</h3>
@@ -137,7 +137,7 @@ const Settings = () => {
           </article>
         </section>
 
-        <section className={cx(ui.surface.elevated, 'space-y-5 p-6')}>
+        <section className={cx(ui.surface.elevated, 'space-y-5')}>
           <header className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <SecurityRoundedIcon className="text-dashboard-accent" fontSize="small" />
@@ -190,7 +190,7 @@ const Settings = () => {
           </div>
         </section>
 
-        <section className={cx(ui.surface.elevated, 'flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between')}>
+        <section className={cx(ui.surface.elevated, 'flex flex-col gap-4 md:flex-row md:items-center md:justify-between')}>
           <div>
             <h3 className="text-sm font-bold tracking-tight text-slate-800">Data Sovereignty</h3>
             <p className="text-xs text-slate-500">Export your ledger or revoke access entirely.</p>

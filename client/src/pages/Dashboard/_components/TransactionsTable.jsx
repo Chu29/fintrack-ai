@@ -14,7 +14,7 @@ const iconMap = {
 
 const TransactionsTable = ({ items }) => {
   return (
-    <section className={cx(ui.surface.card, 'relative p-5 pb-24 sm:p-6 sm:pb-24')}>
+    <section className={cx(ui.surface.card, 'relative pb-18')}>
       <div className={ui.layout.between}>
         <h2 className={ui.text.sectionTitle}>Recent Transactions</h2>
         <button type="button" className={ui.action.link}>
@@ -22,9 +22,8 @@ const TransactionsTable = ({ items }) => {
         </button>
       </div>
 
-      <div className="mt-6 hidden grid-cols-[minmax(0,1.8fr)_120px_120px] gap-4 border-b border-dashboard-border pb-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-slate-500 md:grid">
-        <span>Transaction</span>
-        <span>Date</span>
+      <div className="mt-5 hidden grid-cols-[minmax(0,1.8fr)_120px] gap-4 border-b border-dashboard-border pb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary md:grid">
+        <span>Transaction</span>        
         <span className="text-right">Amount</span>
       </div>
 
@@ -39,15 +38,15 @@ const TransactionsTable = ({ items }) => {
               className={cx(
                 ui.surface.inner,
                 ui.surface.cardHover,
-                'grid gap-4 px-3.5 py-3 md:grid-cols-[minmax(0,1.8fr)_120px_120px] md:items-center',
+                'grid gap-4 px-3 py-3 md:grid-cols-[minmax(0,1.8fr)_120px] md:items-center',
               )}
             >
               <div className="flex items-center gap-3">
                 <span
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-[9px] ${
                     isIncome
-                      ? 'bg-dashboard-income-bg text-dashboard-accent'
-                      : 'bg-dashboard-expense-bg text-dashboard-accent'
+                      ? 'bg-dashboard-income-bg text-dashboard-success'
+                      : 'bg-dashboard-expense-bg text-dashboard-danger'
                   }`}
                 >
                   <Icon fontSize="small" />
@@ -55,15 +54,15 @@ const TransactionsTable = ({ items }) => {
 
                 <div className="min-w-0">
                   <p className={cx(ui.text.label, 'truncate')}>{item.merchant}</p>
-                  <p className={cx(ui.text.overlineWide, 'mt-1')}>{item.category}</p>
+                  <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary">
+                    {item.dateLabel}
+                  </p>
                 </div>
               </div>
 
-              <p className="text-sm text-slate-500 md:text-sm">{item.dateLabel}</p>
-
               <p
-                className={`text-sm font-bold md:text-right ${
-                  isIncome ? 'text-dashboard-accent' : 'text-slate-700'
+                className={`text-[13px] font-medium md:text-right ${
+                  isIncome ? 'text-dashboard-success' : 'text-dashboard-danger'
                 }`}
               >
                 {item.amount}
@@ -75,7 +74,7 @@ const TransactionsTable = ({ items }) => {
 
       <button
         type="button"
-        className={cx(ui.action.fab, 'absolute bottom-6 right-6')}
+        className={cx(ui.action.fab, 'absolute bottom-4 right-4')}
         aria-label="Add transaction"
       >
         <AddRoundedIcon />

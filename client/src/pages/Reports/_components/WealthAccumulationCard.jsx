@@ -39,7 +39,7 @@ const WealthAccumulationCard = ({ amount, detail, months, values }) => {
   const areaPath = `${path} L ${points.at(-1).x} ${CHART_HEIGHT - CHART_PADDING_Y} L ${points[0].x} ${CHART_HEIGHT - CHART_PADDING_Y} Z`
 
   return (
-    <section className={cx(ui.surface.card, 'p-5')}>
+    <section className={cx(ui.surface.card)}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className={ui.text.overline}>Wealth Accumulation</p>
@@ -53,7 +53,7 @@ const WealthAccumulationCard = ({ amount, detail, months, values }) => {
       </div>
 
       <div className="mt-5">
-        <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-[150px] w-full">
+        <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-37.5 w-full">
           <defs>
             <linearGradient id="wealth-fill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="rgba(61,75,96,0.24)" />

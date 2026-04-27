@@ -9,6 +9,8 @@ const AppShell = ({
   profile,
   searchPlaceholder,
 }) => {
+  const activeItem = navigationItems.find((item) => item.active)
+
   return (
     <main className={ui.page.shell}>
       <div className={ui.page.canvas}>
@@ -26,6 +28,7 @@ const AppShell = ({
             <AppTopBar
               profile={profile}
               searchPlaceholder={searchPlaceholder}
+              pageTitle={activeItem?.label || 'Dashboard'}
             />
             <div className={ui.page.content}>{children}</div>
           </section>

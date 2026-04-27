@@ -1,12 +1,12 @@
 import MetricCard from './_components/MetricCard'
-import AdviceCard from './_components/AdviceCard'
+import BalanceHeroCard from './_components/BalanceHeroCard'
 import SpendingChart from './_components/SpendingChart'
 import AlertPanel from './_components/AlertPanel'
 import BudgetTracker from './_components/BudgetTracker'
 import TransactionsTable from './_components/TransactionsTable'
 import {
+  balanceSummary,
   statCards,
-  smartAdvice,
   spendingSeries,
   alertPanel,
   budgetItems,
@@ -26,11 +26,11 @@ const Dashboard = () => {
       primaryAction={dashboardSidebarAction}
       profile={profile}
     >
-      <div className="grid gap-4 xl:grid-cols-[repeat(3,minmax(0,1fr))_220px]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_repeat(3,minmax(0,1fr))]">
+        <BalanceHeroCard {...balanceSummary} />
         {statCards.map((card) => (
           <MetricCard key={card.title} {...card} />
         ))}
-        <AdviceCard {...smartAdvice} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">

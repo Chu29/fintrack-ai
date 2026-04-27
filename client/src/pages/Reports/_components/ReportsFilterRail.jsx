@@ -13,7 +13,7 @@ const exportIconMap = {
 const ReportsFilterRail = ({ filters }) => {
   return (
     <aside className="space-y-4">
-      <section className={cx(ui.surface.card, 'p-5')}>
+      <section className={cx(ui.surface.card)}>
         <div className={ui.layout.row}>
           <AccessTimeRoundedIcon className="text-dashboard-accent" fontSize="small" />
           <p className={ui.text.overline}>Time Period</p>
@@ -40,7 +40,7 @@ const ReportsFilterRail = ({ filters }) => {
         </div>
       </section>
 
-      <section className={cx(ui.surface.card, 'p-5')}>
+      <section className={cx(ui.surface.card)}>
         <div className={ui.layout.row}>
           <LabelRoundedIcon className="text-dashboard-accent" fontSize="small" />
           <p className={ui.text.overline}>Categories</p>
@@ -61,7 +61,7 @@ const ReportsFilterRail = ({ filters }) => {
         </div>
       </section>
 
-      <section className={cx(ui.surface.card, 'p-5')}>
+      <section className={cx(ui.surface.card)}>
         <div className={ui.layout.row}>
           <FileDownloadRoundedIcon
             className="text-dashboard-accent"

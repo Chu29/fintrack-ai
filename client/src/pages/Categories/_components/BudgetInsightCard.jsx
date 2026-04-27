@@ -13,7 +13,7 @@ const BudgetInsightCard = ({ type, eyebrow, title, meta, detail, progress }) => 
 
   if (type === 'budget') {
     return (
-      <article className={cx(ui.surface.card, 'p-5')}>
+      <article className={cx(ui.surface.card)}>
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className={ui.text.overline}>{eyebrow}</p>
@@ -40,7 +40,7 @@ const BudgetInsightCard = ({ type, eyebrow, title, meta, detail, progress }) => 
   }
 
   return (
-    <article className={cx(ui.surface.card, 'p-5')}>
+    <article className={cx(ui.surface.card)}>
       <p className={ui.text.overline}>{eyebrow}</p>
       <div className="mt-4 flex items-start gap-3">
         <span

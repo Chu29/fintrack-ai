@@ -44,7 +44,7 @@ const CategoryBudgetCard = ({
       className={cx(
         ui.surface.card,
         ui.surface.cardHover,
-        'flex min-h-[290px] flex-col p-5',
+        'flex min-h-72.5 flex-col p-5',
       )}
     >
       <div className="flex items-start justify-between gap-3">

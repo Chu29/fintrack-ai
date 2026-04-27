@@ -16,14 +16,18 @@ const iconMap = {
 
 const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
   return (
-    <aside className="border-b border-dashboard-border-soft bg-dashboard-sidebar px-5 py-6 xl:border-b-0 xl:border-r xl:border-dashboard-border xl:px-6 xl:py-7">
-      <div className="flex h-full flex-col gap-6">
+    <aside className="fixed left-0 top-0 z-20 hidden h-screen w-[210px] border-r border-white/10 bg-dashboard-sidebar px-4 py-6 xl:flex">
+      <div className="flex h-full w-full flex-col gap-6">
         <div>
           <p className={ui.text.brand}>FinTrack AI</p>
           <p className={ui.text.brandSub}>The Digital Curator</p>
         </div>
 
-        <nav aria-label="Application navigation" className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
+        <div>
+          <p className="mb-2 px-3 text-[10px] font-medium uppercase tracking-[0.08em] text-dashboard-section">
+            Main
+          </p>
+          <nav aria-label="Application navigation" className="grid gap-1">
           {navigationItems.map((item) => {
             const Icon = iconMap[item.icon]
             const Component = item.to ? Link : 'button'
@@ -33,14 +37,14 @@ const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
               <Component
                 key={item.id}
                 className={cx(
-                  'group relative flex items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition duration-200',
+                  'group relative flex items-center gap-3 rounded-r-[10px] px-3 py-2.5 text-left text-[13px] font-medium transition duration-200',
                   item.active ? ui.surface.navActive : ui.surface.navIdle,
                 )}
                 {...actionProps}
               >
                 <span
                   className={cx(
-                    'absolute bottom-2 left-4 right-4 h-px origin-left bg-dashboard-accent transition duration-200 xl:bottom-3 xl:left-auto xl:right-0 xl:top-3 xl:h-8 xl:w-px',
+                    'absolute inset-y-1 left-0 w-[3px] origin-left rounded-r bg-dashboard-accent transition duration-200',
                     item.active ? 'scale-100 opacity-100' : 'scale-0 opacity-0',
                   )}
                   aria-hidden="true"
@@ -50,26 +54,27 @@ const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
               </Component>
             )
           })}
-        </nav>
+          </nav>
+        </div>
 
-        <div className="grid gap-4 xl:mt-auto">
+        <div className="mt-auto grid gap-4">
           {primaryAction ? (
             primaryAction.to ? (
-              <Link to={primaryAction.to} className={cx(ui.action.primary, 'h-13 px-4')}>
+              <Link to={primaryAction.to} className={cx(ui.action.primary, 'h-10 px-4')}>
                 {primaryAction.label}
               </Link>
             ) : (
-              <button type="button" className={cx(ui.action.primary, 'h-13 px-4')}>
+              <button type="button" className={cx(ui.action.primary, 'h-10 px-4')}>
                 {primaryAction.label}
               </button>
             )
           ) : null}
 
-          <div className={cx(ui.surface.profile, ui.layout.row, 'px-3.5 py-3')}>
+          <div className={cx(ui.surface.profile, ui.layout.row, 'px-3 py-3')}>
             <div className={cx(ui.avatar.base, ui.avatar.md)}>{profile.initials}</div>
             <div className="min-w-0">
-              <p className={cx(ui.text.label, 'truncate')}>{profile.name}</p>
-              <p className="text-xs text-slate-500">{profile.role}</p>
+              <p className="truncate text-[13px] font-medium text-white">{profile.name}</p>
+              <p className="text-[11px] text-dashboard-secondary">{profile.role}</p>
             </div>
           </div>
         </div>
