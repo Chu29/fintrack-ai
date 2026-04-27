@@ -9,7 +9,7 @@ const BudgetRing = ({ progress, accent }) => {
       }}
     >
       <div className="absolute inset-[5px] rounded-full bg-dashboard-ring-inner" />
-      <div className="absolute inset-0 flex items-center justify-center text-[0.62rem] font-bold text-slate-300">
+      <div className="absolute inset-0 flex items-center justify-center text-[0.62rem] font-bold text-slate-600">
         {progress}%
       </div>
     </div>
