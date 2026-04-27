@@ -1,17 +1,3 @@
-export const navigationItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', active: true },
-  { id: 'expense', label: 'Add Expense', icon: 'expense' },
-  { id: 'categories', label: 'Categories', icon: 'categories' },
-  { id: 'reports', label: 'Reports', icon: 'reports' },
-  { id: 'settings', label: 'Settings', icon: 'settings' },
-]
-
-export const profile = {
-  name: 'Alex Rivera',
-  role: 'Premium Curator',
-  initials: 'AR',
-}
-
 export const statCards = [
   {
     title: 'Total Net Worth',
