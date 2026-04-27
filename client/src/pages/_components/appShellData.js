@@ -3,7 +3,7 @@ const navigationBase = [
   { id: 'expense', label: 'Add Expense', icon: 'expense', to: '/add-expense' },
   { id: 'categories', label: 'Categories', icon: 'categories', to: '/categories' },
   { id: 'reports', label: 'Reports', icon: 'reports', to: '/reports' },
-  { id: 'settings', label: 'Settings', icon: 'settings' },
+  { id: 'settings', label: 'Settings', icon: 'settings', to: '/settings' },
 ]
 
 export const getNavigationItems = (activeId) =>
@@ -18,4 +18,8 @@ export const profile = {
 export const dashboardSidebarAction = {
   label: 'New Transaction',
   to: '/add-expense',
+}
+
+export const settingsSidebarAction = {
+  label: 'Upgrade to Pro',
 }
