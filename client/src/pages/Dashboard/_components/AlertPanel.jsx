@@ -7,7 +7,7 @@ const AlertPanel = ({ label, title, body, savings, cta }) => {
   return (
     <aside className={cx(ui.surface.alert, 'relative overflow-hidden p-6')}>
       <RestaurantRoundedIcon
-        className="absolute right-5 top-5 text-slate-400/14"
+        className="absolute right-5 top-5 text-slate-300/40"
         sx={{ fontSize: 84 }}
       />
 
@@ -19,7 +19,7 @@ const AlertPanel = ({ label, title, body, savings, cta }) => {
           <p className={cx(ui.text.overlineTight, ui.text.amber)}>{label}</p>
         </div>
 
-        <h2 className="mt-7 max-w-[12ch] text-[2rem] leading-[1.05] font-bold tracking-tight text-slate-100">
+        <h2 className="mt-7 max-w-[12ch] text-[2rem] leading-[1.05] font-bold tracking-tight text-dashboard-ink">
           {title}
         </h2>
 
