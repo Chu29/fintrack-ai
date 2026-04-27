@@ -22,7 +22,7 @@ const TransactionsTable = ({ items }) => {
         </button>
       </div>
 
-      <div className="mt-6 hidden grid-cols-[minmax(0,1.8fr)_120px_120px] gap-4 border-b border-white/6 pb-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-slate-500 md:grid">
+      <div className="mt-6 hidden grid-cols-[minmax(0,1.8fr)_120px_120px] gap-4 border-b border-dashboard-border pb-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-slate-500 md:grid">
         <span>Transaction</span>
         <span>Date</span>
         <span className="text-right">Amount</span>
@@ -59,11 +59,11 @@ const TransactionsTable = ({ items }) => {
                 </div>
               </div>
 
-              <p className="text-sm text-slate-400 md:text-sm">{item.dateLabel}</p>
+              <p className="text-sm text-slate-500 md:text-sm">{item.dateLabel}</p>
 
               <p
                 className={`text-sm font-bold md:text-right ${
-                  isIncome ? 'text-dashboard-accent' : 'text-slate-300'
+                  isIncome ? 'text-dashboard-accent' : 'text-slate-700'
                 }`}
               >
                 {item.amount}
