@@ -7,6 +7,7 @@ import CreateAccount from './pages/CreateAccount/CreateAccount.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import AddExpense from './pages/AddExpense/AddExpense.jsx'
 import Categories from './pages/Categories/Categories.jsx'
+import Reports from './pages/Reports/Reports.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/reports" element={<Reports />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
