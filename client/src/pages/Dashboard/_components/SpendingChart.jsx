@@ -62,15 +62,15 @@ const SpendingChart = ({ series }) => {
       <div className="relative mt-8">
         <div className="pointer-events-none absolute inset-0 grid grid-rows-4">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="border-t border-white/6" />
+            <div key={index} className="border-t border-dashboard-border" />
           ))}
         </div>
 
         <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="h-65 w-full">
           <defs>
             <linearGradient id="dashboard-curve" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#2ed7cf" />
-              <stop offset="100%" stopColor="#69f0d6" />
+              <stop offset="0%" stopColor="var(--color-dashboard-accent)" />
+              <stop offset="100%" stopColor="var(--color-dashboard-progress-end)" />
             </linearGradient>
           </defs>
 
@@ -92,8 +92,13 @@ const SpendingChart = ({ series }) => {
 
           {coordinates.map((point) => (
             <g key={point.month}>
-              <circle cx={point.x} cy={point.y} r="6" fill="#0d1627" />
-              <circle cx={point.x} cy={point.y} r="3" fill="#69f0d6" />
+              <circle cx={point.x} cy={point.y} r="6" fill="white" />
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="3"
+                fill="var(--color-dashboard-accent)"
+              />
             </g>
           ))}
         </svg>
