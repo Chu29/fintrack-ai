@@ -24,6 +24,8 @@ model User {
   expenses    Expense[]
   budgets     Budget[]
   oauth       OAuthAccount[]
+
+  @@map("user")
 }
 
 model OAuthAccount {
@@ -36,6 +38,7 @@ model OAuthAccount {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("oauth_account")
 }
 
 model Category {
@@ -51,6 +54,7 @@ model Category {
 
   @@unique([userId, name])
   budgets Budget[]
+  @@map("category")
 }
 
 model Expense {
@@ -68,6 +72,7 @@ model Expense {
 
   @@index([userId, spentAt])
   @@index([userId, categoryId])
+  @@map("expense")
 }
 
 model Budget {
@@ -84,4 +89,5 @@ model Budget {
   category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId, month, year])
+  @@map("budget")
 }
