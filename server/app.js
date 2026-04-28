@@ -6,7 +6,7 @@ import PinoHttp from 'pino-http'
 import { env } from './src/config/env.js'
 import { requestIdMiddleware } from './src/middleware/requestId.js'
 import { notFoundHandler, errorHandler } from './src/middleware/errors.js'
-// import { apiRouter } from './src/routes/api.js'
+import { apiRouter } from './src/routes/api.js'
 
 export const app = express()
 
@@ -26,6 +26,6 @@ app.get('/health', (req, res) => {
   })
 })
 
-// app.use('/api', apiRouter)
+app.use('/api', apiRouter)
 app.use(notFoundHandler)
 app.use(errorHandler)
