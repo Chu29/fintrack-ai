@@ -1,8 +1,47 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import '../index.css'
 import SignIn from './_components/SignIn'
 import { authStyles as auth } from './_components/authStyles'
+import { useAuth } from '../shared/auth/AuthContext.jsx'
 
 const SplashScreen = () => {
+  const navigate = useNavigate()
+  const { isAuthenticated, authError, clearAuthError, signInWithEmail, signInWithGoogle } = useAuth()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
+
+  const handleEmailSignIn = async (credentials) => {
+    setIsSubmitting(true)
+    clearAuthError()
+    try {
+      await signInWithEmail(credentials)
+      navigate('/dashboard')
+    } catch {
+      // Auth errors are surfaced via AuthContext state.
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    setIsSubmitting(true)
+    clearAuthError()
+    try {
+      await signInWithGoogle()
+      navigate('/dashboard')
+    } catch {
+      // Auth errors are surfaced via AuthContext state.
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <main className="min-h-screen bg-dashboard-page px-6 py-8 text-dashboard-ink md:px-10 lg:px-16">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.2fr_0.9fr]">
@@ -25,6 +64,7 @@ const SplashScreen = () => {
             <button
               type="button"
               className={auth.ctaPrimary}
+              onClick={() => navigate('/create-account')}
             >
               Get Started
             </button>
@@ -45,7 +85,13 @@ const SplashScreen = () => {
           className={auth.panelCompact}
           aria-label="Sign in panel"
         >
-          <SignIn />
+          <SignIn
+            onEmailSignIn={handleEmailSignIn}
+            onGoogleSignIn={handleGoogleSignIn}
+            onCreateAccount={() => navigate('/create-account')}
+            isSubmitting={isSubmitting}
+            errorMessage={authError}
+          />
         </section>
       </div>
     </main>

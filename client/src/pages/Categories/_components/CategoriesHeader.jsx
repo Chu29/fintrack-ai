@@ -1,7 +1,7 @@
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { cx, appStyles as ui } from '../../_components/appStyles'
 
-const CategoriesHeader = () => {
+const CategoriesHeader = ({ onCreateCategory, isSubmitting }) => {
   return (
     <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
       <div className="max-w-xl">
@@ -15,9 +15,11 @@ const CategoriesHeader = () => {
       <button
         type="button"
         className={cx(ui.action.primary, 'h-13 gap-2 px-5 text-white')}
+        onClick={onCreateCategory}
+        disabled={isSubmitting}
       >
         <AddRoundedIcon fontSize="small" />
-        <span>New Category</span>
+        <span>{isSubmitting ? 'Saving...' : 'New Category'}</span>
       </button>
     </header>
   )

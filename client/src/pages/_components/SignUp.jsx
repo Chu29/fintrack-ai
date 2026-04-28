@@ -1,4 +1,3 @@
-import React from 'react'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
@@ -13,6 +12,10 @@ const SignUp = ({
   showConfirmPassword,
   setShowPassword,
   setShowConfirmPassword,
+  onGoogleSignUp,
+  onLogin,
+  isSubmitting,
+  errorMessage,
 }) => {
   return (
     <form onSubmit={handleSubmit} className={auth.panel}>
@@ -156,8 +159,9 @@ const SignUp = ({
       <button
         type="submit"
         className={`${auth.primaryButton} mt-7 h-13`}
+        disabled={isSubmitting}
       >
-        <span>Create Account</span>
+        <span>{isSubmitting ? 'Creating Account...' : 'Create Account'}</span>
         <ArrowForwardRoundedIcon fontSize="small" />
       </button>
 
@@ -172,14 +176,22 @@ const SignUp = ({
       <button
         type="button"
         className={`${auth.secondaryButton} mt-5 text-sm`}
+        onClick={onGoogleSignUp}
+        disabled={isSubmitting}
       >
         <GoogleIcon fontSize="small" />
         <span>Sign up with Google</span>
       </button>
 
+      {errorMessage ? (
+        <p className="mt-4 rounded-2xl bg-rose-50 px-3 py-2 text-center text-sm text-rose-600">
+          {errorMessage}
+        </p>
+      ) : null}
+
       <p className="mt-7 text-center text-sm text-slate-500">
         Already have an account?{' '}
-        <button type="button" className={auth.link}>
+        <button type="button" className={auth.link} onClick={onLogin}>
           Log In
         </button>
       </p>

@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 import SignUp from '../_components/SignUp'
 import { authStyles as auth } from '../_components/authStyles'
+import { useAuth } from '../../shared/auth/AuthContext.jsx'
 
 const CreateAccount = () => {
+  const navigate = useNavigate()
+  const { signUpWithEmail, signInWithGoogle, authError, clearAuthError, isAuthenticated } = useAuth()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -13,6 +17,13 @@ const CreateAccount = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -23,9 +34,42 @@ const CreateAccount = () => {
     }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('Create account payload:', formData)
+
+    if (formData.password !== formData.confirmPassword) {
+      return
+    }
+
+    setIsSubmitting(true)
+    clearAuthError()
+
+    try {
+      await signUpWithEmail({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      })
+      navigate('/dashboard')
+    } catch {
+      // Auth errors are surfaced via AuthContext state.
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleGoogleSignUp = async () => {
+    setIsSubmitting(true)
+    clearAuthError()
+
+    try {
+      await signInWithGoogle()
+      navigate('/dashboard')
+    } catch {
+      // Auth errors are surfaced via AuthContext state.
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -46,6 +90,14 @@ const CreateAccount = () => {
           showConfirmPassword={showConfirmPassword}
           setShowPassword={setShowPassword}
           setShowConfirmPassword={setShowConfirmPassword}
+          onGoogleSignUp={handleGoogleSignUp}
+          onLogin={() => navigate('/')}
+          isSubmitting={isSubmitting}
+          errorMessage={
+            formData.password !== formData.confirmPassword
+              ? 'Passwords do not match'
+              : authError
+          }
         />
       </div>
     </main>

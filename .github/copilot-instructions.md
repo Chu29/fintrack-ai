@@ -180,3 +180,74 @@ Implementation guardrails:
   - `requestId`
 - Request correlation pattern: always preserve `req.requestId` and `x-request-id` behavior from `requestIdMiddleware` when adding middleware/routes.
 - Do not hand-edit Prisma generated files under `server/src/generated/prisma/`; update `prisma/schema.prisma` and regenerate.
+
+## Frontend API integration playbook (for Copilot)
+
+Use this exact order when wiring frontend pages to backend API. API base: `http://localhost:3000/api/v1`
+
+1. Create a shared axios HTTP client.
+   - Create `src/shared/http.js` as a centralized API layer.
+   - Export an axios instance configured with base URL and response interceptors.
+   - Attach Firebase ID token to all requests via `Authorization: Bearer <token>` header.
+   - Handle 401 errors by redirecting to login or refreshing the token.
+   - Ensure all responses return `{ ok, data, error, requestId }` shape.
+
+2. Create API service modules for each backend module.
+   - For each backend module (auth, categories, expenses, budgets, reports), create a service under `src/shared/api/`:
+     - `src/shared/api/authApi.js`
+     - `src/shared/api/categoriesApi.js`
+     - `src/shared/api/expensesApi.js`
+     - `src/shared/api/budgetsApi.js`
+     - `src/shared/api/reportsApi.js`
+   - Each service exports named functions matching backend endpoints (e.g., `getCategories()`, `createExpense(data)`).
+   - Use the shared axios client to call backend endpoints.
+
+3. Wire auth endpoints first (`src/shared/api/authApi.js`).
+   - `POST /auth/session`: create or upsert user session given Firebase token.
+   - `GET /auth/me`: fetch authenticated user profile.
+   - `POST /auth/logout`: clear session.
+   - Call these during app load (App.jsx or auth guard) to sync Firebase identity with backend user record.
+
+4. Wire categories endpoints (`src/shared/api/categoriesApi.js`).
+   - `GET /categories`: list all categories for the user.
+   - `POST /categories`: create a new category.
+   - `PUT /categories/:id`: update category.
+   - `DELETE /categories/:id`: delete category.
+   - Call from [Categories.jsx](client/src/pages/Categories/Categories.jsx) page load and form submissions.
+
+5. Wire expenses endpoints (`src/shared/api/expensesApi.js`).
+   - `GET /expenses`: list expenses with optional filters (category, date range).
+   - `POST /expenses`: create an expense.
+   - `PUT /expenses/:id`: update expense.
+   - `DELETE /expenses/:id`: delete expense.
+   - Call from [AddExpense.jsx](client/src/pages/AddExpense/AddExpense.jsx) and [Dashboard.jsx](client/src/pages/Dashboard/Dashboard.jsx).
+
+6. Wire budgets endpoints (`src/shared/api/budgetsApi.js`).
+   - `GET /budgets`: list budgets by month/year.
+   - `POST /budgets`: create or upsert budget.
+   - `DELETE /budgets/:id`: delete budget.
+   - Call from [Categories.jsx](client/src/pages/Categories/Categories.jsx) budget cards and [Dashboard.jsx](client/src/pages/Dashboard/Dashboard.jsx).
+
+7. Wire reports endpoints (`src/shared/api/reportsApi.js`).
+   - `GET /reports/spending-by-category`: get spending breakdown by category.
+   - `GET /reports/monthly-trend`: get monthly spend trend.
+   - `GET /reports/budget-vs-actual`: get budget vs actual per category.
+   - Call from [Reports.jsx](client/src/pages/Reports/Reports.jsx) on page load.
+
+8. Replace static data with API calls in each page.
+   - Remove mock data from `*Data.js` files or keep as fallback.
+   - Use React hooks (useState, useEffect) to fetch data on page mount.
+   - Handle loading and error states in component render.
+   - Example: in [Dashboard.jsx](client/src/pages/Dashboard/Dashboard.jsx), fetch dashboard data from `/reports/` endpoints instead of `dashboardData.js`.
+
+9. Add error boundary and auth guard.
+   - Create a higher-order component or context to enforce authenticated access.
+   - Redirect unauthenticated users to login page.
+   - Show error toasts or alerts for API failures.
+
+10. Validate end-to-end locally.
+
+- Start backend: `pnpm --dir server dev`.
+- Start frontend: `pnpm --dir client dev`.
+- Sign in with Firebase, then navigate pages and confirm data loads from backend API.
+- Check browser network tab for requests to `http://localhost:3000/api/v1/*`.

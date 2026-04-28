@@ -3,6 +3,8 @@ import ShoppingBasketRoundedIcon from '@mui/icons-material/ShoppingBasketRounded
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded'
 import MovieRoundedIcon from '@mui/icons-material/MovieRounded'
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded'
+import EditRoundedIcon from '@mui/icons-material/EditRounded'
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import { cx, appStyles as ui } from '../../_components/appStyles'
 
 const iconMap = {
@@ -26,6 +28,7 @@ const progressClasses = {
 }
 
 const CategoryBudgetCard = ({
+  id,
   icon,
   title,
   description,
@@ -36,6 +39,9 @@ const CategoryBudgetCard = ({
   sliderPosition,
   limit,
   overlineValue,
+  onEdit,
+  onDelete,
+  onSetBudget,
 }) => {
   const Icon = iconMap[icon]
 
@@ -44,21 +50,39 @@ const CategoryBudgetCard = ({
       className={cx(
         ui.surface.card,
         ui.surface.cardHover,
-        'flex min-h-72.5 flex-col p-5',
+        'group flex min-h-72.5 flex-col p-5',
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-dashboard-inner text-dashboard-accent">
           <Icon fontSize="small" />
         </span>
-        <span
-          className={cx(
-            'rounded-full px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.18em]',
-            toneClasses[tagTone],
-          )}
-        >
-          {tag}
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="flex opacity-0 transition-opacity group-hover:opacity-100">
+            <button
+              onClick={() => onEdit(id)}
+              className="p-1 text-slate-400 hover:text-dashboard-accent"
+              title="Edit Category"
+            >
+              <EditRoundedIcon sx={{ fontSize: 18 }} />
+            </button>
+            <button
+              onClick={() => onDelete(id)}
+              className="p-1 text-slate-400 hover:text-rose-500"
+              title="Delete Category"
+            >
+              <DeleteOutlineRoundedIcon sx={{ fontSize: 18 }} />
+            </button>
+          </div>
+          <span
+            className={cx(
+              'rounded-full px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.18em]',
+              toneClasses[tagTone],
+            )}
+          >
+            {tag}
+          </span>
+        </div>
       </div>
 
       <div className="mt-8">
@@ -92,19 +116,18 @@ const CategoryBudgetCard = ({
         </div>
 
         <div className="mt-6 flex items-center justify-between gap-3">
-          <p className={ui.text.overline}>Set Budget Limit</p>
+          <p className={ui.text.overline}>Monthly Budget Limit</p>
           <p className="text-xl font-black tracking-tight text-dashboard-ink">
             {limit}
           </p>
         </div>
 
-        <div className="mt-3 relative h-6">
-          <div className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-dashboard-control" />
-          <span
-            className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-dashboard-accent shadow-dashboard-accent"
-            style={{ left: `calc(${sliderPosition}% - 8px)` }}
-          />
-        </div>
+        <button
+          onClick={() => onSetBudget(id)}
+          className="mt-4 w-full rounded-xl bg-dashboard-control py-2 text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:bg-dashboard-accent hover:text-white"
+        >
+          {limit === '$0.00' ? 'Set Budget' : 'Update Budget'}
+        </button>
       </div>
     </article>
   )

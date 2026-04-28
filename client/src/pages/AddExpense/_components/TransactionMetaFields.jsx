@@ -55,10 +55,9 @@ const TransactionMetaFields = ({
             fontSize="small"
           />
           <input
-            type="text"
+            type="date"
             value={dateValue}
             onChange={onDateChange}
-            placeholder="mm/dd/yyyy"
             className={ui.form.input}
             aria-label="Transaction date"
           />
