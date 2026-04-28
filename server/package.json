@@ -10,7 +10,8 @@
     "test": "vitest run",
     "prisma": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "",
