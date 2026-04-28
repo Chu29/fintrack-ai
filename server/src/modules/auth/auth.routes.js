@@ -1,8 +1,29 @@
 import { Router } from 'express'
 import { validateRequest } from '../../middleware/validateRequest.js'
-import { getAuthStatusController } from './auth.controller.js'
-import { authStatusRequestSchema } from './auth.schema.js'
+import { authenticate } from '../../middleware/authenticate.js'
+import {
+  createSessionController,
+  getMeController,
+  logoutController,
+} from './auth.controller.js'
+import {
+  createSessionRequestSchema,
+  getMeRequestSchema,
+  logoutRequestSchema,
+} from './auth.schema.js'
 
 export const authRouter = Router()
 
-authRouter.get('/', validateRequest(authStatusRequestSchema), getAuthStatusController)
+authRouter.post(
+  '/session',
+  validateRequest(createSessionRequestSchema),
+  authenticate,
+  createSessionController
+)
+authRouter.get('/me', validateRequest(getMeRequestSchema), authenticate, getMeController)
+authRouter.post(
+  '/logout',
+  validateRequest(logoutRequestSchema),
+  authenticate,
+  logoutController
+)
