@@ -6,12 +6,16 @@ import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded'
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded'
 import AppShell from '../_components/AppShell'
 import { cx, appStyles as ui } from '../_components/appStyles'
-import { getNavigationItems, profile, settingsSidebarAction } from '../_components/appShellData'
-import { accentOptions, ledgerStatus, personalIdentity } from './settingsData'
+import { getNavigationItems, settingsSidebarAction } from '../_components/appShellData'
+import { accentOptions, ledgerStatus } from './settingsData'
+import { useAuth } from '../../shared/auth/AuthContext.jsx'
+import { toProfile } from '../../shared/uiData'
 
 const badge = 'inline-flex items-center gap-1 rounded-full px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em]'
 
 const Settings = () => {
+  const auth = useAuth()
+  const profile = toProfile(auth)
   const [minimalInterface, setMinimalInterface] = useState(true)
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
 
@@ -37,27 +41,27 @@ const Settings = () => {
           <div className="grid gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
             <article className={cx(ui.surface.inner, 'flex flex-col items-center justify-center gap-4 px-6 py-7 text-center')}>
               <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-slate-300 to-slate-500 text-2xl font-black text-white shadow-lg shadow-slate-300/30">
-                AS
+                {profile.initials}
                 <span className="absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white bg-emerald-400" />
               </div>
-              <p className={cx(badge, 'bg-amber-100 text-amber-700')}>{personalIdentity.role}</p>
+              <p className={cx(badge, 'bg-amber-100 text-amber-700')}>{profile.role}</p>
             </article>
 
             <article className={cx(ui.surface.inner, 'space-y-6 p-5')}>
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <p className={ui.text.overline}>Full Name</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-800">{personalIdentity.name}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-800">{profile.name}</p>
                 </div>
                 <div>
                   <p className={ui.text.overline}>Email Address</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-800">{personalIdentity.email}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-800">{auth.user?.email}</p>
                 </div>
               </div>
 
               <div>
                 <p className={ui.text.overline}>Professional Bio</p>
-                <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">{personalIdentity.bio}</p>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">The digital curator of this financial ledger.</p>
               </div>
 
               <div className="flex justify-end">

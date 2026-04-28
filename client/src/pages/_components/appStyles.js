@@ -7,7 +7,7 @@ export const appStyles = {
     dots: 'hidden',
     glow: 'hidden',
     layout: 'min-h-screen',
-    content: 'px-6 py-6 xl:ml-[210px]',
+    content: 'px-6 py-6 xl:ml-64',
   },
   surface: {
     card: 'rounded-[10px] border border-dashboard-border bg-dashboard-card p-4 shadow-dashboard-card',

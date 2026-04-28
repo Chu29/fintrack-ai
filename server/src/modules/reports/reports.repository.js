@@ -39,7 +39,7 @@ export function getMonthlySpendingTrend({ userId, year }) {
     SELECT
       EXTRACT(MONTH FROM "spentAt")::int AS month,
       COALESCE(SUM("amount"), 0)::text AS "totalSpent"
-    FROM "Expense"
+    FROM "expense"
     WHERE "userId" = ${userId}
       AND EXTRACT(YEAR FROM "spentAt")::int = ${year}
     GROUP BY month
