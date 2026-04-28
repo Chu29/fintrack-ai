@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
 import PinoHttp from 'pino-http'
+import { env } from './src/config/env.js'
 import { requestIdMiddleware } from './src/middleware/requestId.js'
 import { notFoundHandler, errorHandler } from './src/middleware/errors.js'
 // import { apiRouter } from './src/routes/api.js'
@@ -10,7 +11,7 @@ import { notFoundHandler, errorHandler } from './src/middleware/errors.js'
 export const app = express()
 
 app.use(helmet())
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
+app.use(cors({ origin: env.CLIENT_URL, credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
 app.use(PinoHttp())
