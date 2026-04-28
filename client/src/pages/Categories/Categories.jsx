@@ -4,6 +4,9 @@ import { getNavigationItems } from '../_components/appShellData'
 import CategoriesHeader from './_components/CategoriesHeader'
 import BudgetOverviewRow from './_components/BudgetOverviewRow'
 import CategoryBudgetGrid from './_components/CategoryBudgetGrid'
+import CategoryModal from './_components/CategoryModal'
+import BudgetModal from './_components/BudgetModal'
+import ConfirmModal from '../_components/ConfirmModal'
 import { categoriesFooterNote } from './categoriesData'
 import { createCategory, getCategories, updateCategory, deleteCategory } from '../../shared/api/categoriesApi'
 import { getBudgets, upsertBudget } from '../../shared/api/budgetsApi'
@@ -20,6 +23,12 @@ const Categories = () => {
   const [error, setError] = useState('')
   const [categories, setCategories] = useState([])
   const [budgets, setBudgets] = useState([])
+
+  // Modal states
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false)
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
 
   useEffect(() => {
     let isMounted = true
@@ -63,66 +72,66 @@ const Categories = () => {
     }
   }, [])
 
-  const handleCreateCategory = async () => {
-    const name = window.prompt('Category name')
-    if (!name || !name.trim()) {
-      return
-    }
-
-    setIsSubmitting(true)
-    setError('')
-
-    try {
-      const category = await createCategory({
-        name: name.trim(),
-        color: '#39d6cf',
-      })
-      setCategories((prev) => [category, ...prev])
-    } catch (createError) {
-      setError(createError?.error?.message || 'Failed to create category')
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleOpenCreateModal = () => {
+    setSelectedCategory(null)
+    setIsCategoryModalOpen(true)
   }
 
-  const handleEditCategory = async (categoryId) => {
+  const handleOpenEditModal = (categoryId) => {
     const category = categories.find((c) => c.id === categoryId)
-    if (!category) return
+    setSelectedCategory(category)
+    setIsCategoryModalOpen(true)
+  }
 
-    const newName = window.prompt('Update category name', category.name)
-    if (!newName || newName.trim() === category.name) {
-      return
-    }
+  const handleOpenBudgetModal = (categoryId) => {
+    const category = categories.find((c) => c.id === categoryId)
+    const budget = budgets.find((b) => b.categoryId === categoryId)
+    setSelectedCategory({ ...category, limitAmount: budget?.limitAmount || '' })
+    setIsBudgetModalOpen(true)
+  }
 
+  const handleOpenConfirmDelete = (categoryId) => {
+    const category = categories.find((c) => c.id === categoryId)
+    setSelectedCategory(category)
+    setIsConfirmDeleteOpen(true)
+  }
+
+  const handleSaveCategory = async (data) => {
     setIsSubmitting(true)
     setError('')
 
     try {
-      const updated = await updateCategory(categoryId, {
-        name: newName.trim(),
-      })
-      setCategories((prev) =>
-        prev.map((c) => (c.id === categoryId ? updated : c))
-      )
-    } catch (updateError) {
-      setError(updateError?.error?.message || 'Failed to update category')
+      if (selectedCategory) {
+        const updated = await updateCategory(selectedCategory.id, data)
+        setCategories((prev) =>
+          prev.map((c) => (c.id === selectedCategory.id ? updated : c))
+        )
+      } else {
+        const category = await createCategory({
+          ...data,
+          color: '#39d6cf',
+        })
+        setCategories((prev) => [category, ...prev])
+      }
+      setIsCategoryModalOpen(false)
+    } catch (createError) {
+      setError(createError?.error?.message || 'Failed to save category')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleDeleteCategory = async (categoryId) => {
-    if (!window.confirm('Are you sure you want to delete this category? All related expenses will be uncategorized.')) {
-      return
-    }
+  const handleDeleteCategory = async () => {
+    if (!selectedCategory) return
 
     setIsSubmitting(true)
     setError('')
 
     try {
-      await deleteCategory(categoryId)
-      setCategories((prev) => prev.filter((c) => c.id !== categoryId))
-      setBudgets((prev) => prev.filter((b) => b.categoryId !== categoryId))
+      await deleteCategory(selectedCategory.id)
+      setCategories((prev) => prev.filter((c) => c.id !== selectedCategory.id))
+      setBudgets((prev) => prev.filter((b) => b.categoryId !== selectedCategory.id))
+      setIsConfirmDeleteOpen(false)
     } catch (deleteError) {
       setError(deleteError?.error?.message || 'Failed to delete category')
     } finally {
@@ -130,20 +139,8 @@ const Categories = () => {
     }
   }
 
-  const handleSetBudget = async (categoryId) => {
-    const budget = budgets.find((b) => b.categoryId === categoryId)
-    const currentLimit = budget ? budget.limitAmount : 0
-
-    const newLimit = window.prompt('Monthly budget limit', currentLimit)
-    if (newLimit === null || newLimit === '') {
-      return
-    }
-
-    const limitAmount = parseFloat(newLimit)
-    if (isNaN(limitAmount) || limitAmount < 0) {
-      alert('Please enter a valid positive number')
-      return
-    }
+  const handleSaveBudget = async (limitAmount) => {
+    if (!selectedCategory) return
 
     setIsSubmitting(true)
     setError('')
@@ -154,19 +151,20 @@ const Categories = () => {
       const year = now.getUTCFullYear()
 
       const updated = await upsertBudget({
-        categoryId,
+        categoryId: selectedCategory.id,
         limitAmount,
         month,
         year,
       })
 
       setBudgets((prev) => {
-        const index = prev.findIndex((b) => b.categoryId === categoryId)
+        const index = prev.findIndex((b) => b.categoryId === selectedCategory.id)
         if (index > -1) {
           return prev.map((b, i) => (i === index ? updated : b))
         }
         return [...prev, updated]
       })
+      setIsBudgetModalOpen(false)
     } catch (budgetError) {
       setError(budgetError?.error?.message || 'Failed to set budget')
     } finally {
@@ -246,7 +244,7 @@ const Categories = () => {
       searchPlaceholder="Search categories..."
     >
       <div className="space-y-6">
-        <CategoriesHeader onCreateCategory={handleCreateCategory} isSubmitting={isSubmitting} />
+        <CategoriesHeader onCreateCategory={handleOpenCreateModal} isSubmitting={isSubmitting} />
         {isLoading ? (
           <p className="text-sm text-slate-500">Loading categories...</p>
         ) : null}
@@ -256,16 +254,44 @@ const Categories = () => {
         <BudgetOverviewRow items={budgetOverviewCards} />
         <CategoryBudgetGrid
           items={budgetCategories}
-          onCreateCategory={handleCreateCategory}
-          onEditCategory={handleEditCategory}
-          onDeleteCategory={handleDeleteCategory}
-          onSetBudget={handleSetBudget}
+          onCreateCategory={handleOpenCreateModal}
+          onEditCategory={handleOpenEditModal}
+          onDeleteCategory={handleOpenConfirmDelete}
+          onSetBudget={handleOpenBudgetModal}
           isSubmitting={isSubmitting}
         />
         <p className="pt-1 text-center text-[0.62rem] font-bold uppercase tracking-[0.28em] text-slate-400">
           {categoriesFooterNote}
         </p>
       </div>
+
+      <CategoryModal
+        key={isCategoryModalOpen ? (selectedCategory?.id || 'new') : 'closed'}
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        onSave={handleSaveCategory}
+        initialData={selectedCategory}
+        isSubmitting={isSubmitting}
+      />
+
+      <BudgetModal
+        key={isBudgetModalOpen ? (selectedCategory?.id || 'budget') : 'budget-closed'}
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        onSave={handleSaveBudget}
+        initialLimit={selectedCategory?.limitAmount}
+        categoryName={selectedCategory?.name}
+        isSubmitting={isSubmitting}
+      />
+
+      <ConfirmModal
+        isOpen={isConfirmDeleteOpen}
+        onClose={() => setIsConfirmDeleteOpen(false)}
+        onConfirm={handleDeleteCategory}
+        title="Delete Category"
+        message={`Are you sure you want to delete "${selectedCategory?.name}"? All related expenses will be uncategorized.`}
+        confirmText="Delete"
+      />
     </AppShell>
   )
 }

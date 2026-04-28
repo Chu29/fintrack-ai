@@ -36,7 +36,6 @@ const CategoryBudgetCard = ({
   tagTone,
   progress,
   progressTone,
-  sliderPosition,
   limit,
   overlineValue,
   onEdit,

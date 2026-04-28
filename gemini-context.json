@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-04-28T14:59:30.149+01:00",
+  "repo": "Chu29/fintrack-ai",
+  "branch": "dev",
+  "handoff_goal": "Let Gemini CLI continue frontend integration work exactly from latest Copilot state.",
+  "current_state": {
+    "backend": {
+      "status": "Implemented through Step 12",
+      "details": [
+        "Versioned API mounted at /api/v1 with modules: auth, categories, expenses, budgets, reports.",
+        "Auth uses Firebase Admin token verification and local User/OAuthAccount sync.",
+        "Categories/Expenses/Budgets CRUD and Reports aggregates are implemented.",
+        "Route tests added (Vitest + Supertest): 29 passing."
+      ]
+    },
+    "frontend": {
+      "status": "In progress per updated .github/copilot-instructions.md",
+      "details": [
+        "Shared Firebase + Axios API layer added under client/src/shared.",
+        "AuthProvider/AuthGuard/ApiErrorBoundary wired in client/src/main.jsx.",
+        "Sign-in and create-account flows wired to Firebase auth.",
+        "Readable auth error mapping added (no raw 'Firebase: Error (...)' shown).",
+        "Dashboard, Categories, AddExpense, Reports pages switched to backend API calls with loading/error states."
+      ]
+    }
+  },
+  "recent_validation": {
+    "client": [
+      "pnpm --dir client lint (passed)",
+      "pnpm --dir client build (passed)"
+    ],
+    "server": [
+      "pnpm --dir server test (passed: 29/29)"
+    ]
+  },
+  "modified_files_tracked": [
+    ".github/copilot-instructions.md",
+    "client/.env.example",
+    "client/package.json",
+    "client/pnpm-lock.yaml",
+    "client/src/main.jsx",
+    "client/src/pages/AddExpense/AddExpense.jsx",
+    "client/src/pages/AddExpense/_components/ExpenseActions.jsx",
+    "client/src/pages/AddExpense/_components/TransactionMetaFields.jsx",
+    "client/src/pages/Categories/Categories.jsx",
+    "client/src/pages/Categories/_components/AddCategoryCard.jsx",
+    "client/src/pages/Categories/_components/CategoriesHeader.jsx",
+    "client/src/pages/Categories/_components/CategoryBudgetGrid.jsx",
+    "client/src/pages/CreateAccount/CreateAccount.jsx",
+    "client/src/pages/Dashboard/Dashboard.jsx",
+    "client/src/pages/Reports/Reports.jsx",
+    "client/src/pages/SplashScreen.jsx",
+    "client/src/pages/_components/SignIn.jsx",
+    "client/src/pages/_components/SignUp.jsx",
+    "server/.gitignore"
+  ],
+  "new_untracked_files": [
+    "client/src/shared/api/authApi.js",
+    "client/src/shared/api/budgetsApi.js",
+    "client/src/shared/api/categoriesApi.js",
+    "client/src/shared/api/expensesApi.js",
+    "client/src/shared/api/reportsApi.js",
+    "client/src/shared/auth/ApiErrorBoundary.jsx",
+    "client/src/shared/auth/AuthContext.jsx",
+    "client/src/shared/auth/AuthGuard.jsx",
+    "client/src/shared/auth/errorMessages.js",
+    "client/src/shared/firebaseClient.js",
+    "client/src/shared/http.js",
+    "client/src/shared/uiData.js"
+  ],
+  "important_behavior_notes": [
+    "Frontend API base URL uses VITE_API_BASE_URL with fallback http://localhost:3000/api/v1.",
+    "Axios response interceptor normalizes payloads to backend shape and redirects to '/' on 401 for protected pages.",
+    "Auth error UX now maps Firebase/backend codes to readable messages in client/src/shared/auth/errorMessages.js."
+  ],
+  "recommended_next_actions_for_gemini": [
+    "Run app end-to-end: start server and client, authenticate with Firebase, verify all pages load API-backed data.",
+    "Resolve any endpoint contract mismatches found in runtime (especially PUT vs PATCH/POST route expectations).",
+    "Refine UX around create/update/delete actions on Categories and Add Expense (currently partially prompt/inline-based).",
+    "Optionally commit in logical chunks (auth plumbing, API services, page integrations)."
+  ],
+  "resume_commands": [
+    "pnpm --dir server dev",
+    "pnpm --dir client dev",
+    "pnpm --dir client lint",
+    "pnpm --dir client build",
+    "pnpm --dir server test"
+  ]
+}
+
