@@ -7,6 +7,7 @@ import { env } from './src/config/env.js'
 import { requestIdMiddleware } from './src/middleware/requestId.js'
 import { notFoundHandler, errorHandler } from './src/middleware/errors.js'
 import { apiRouter } from './src/routes/api.js'
+import { sendSuccess } from './src/shared/http.js'
 
 export const app = express()
 
@@ -18,11 +19,9 @@ app.use(PinoHttp())
 app.use(requestIdMiddleware)
 
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    ok: true,
+  sendSuccess(req, res, {
     service: 'fintrack-api',
     uptime: process.uptime(),
-    requestId: req.requestId,
   })
 })
 
