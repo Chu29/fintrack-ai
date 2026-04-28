@@ -12,8 +12,8 @@ export function notFoundHandler(req, res) {
     error: {
       code: 'NOT_FOUND',
       message: 'Route not found',
-      requestId: req.requestId,
     },
+    requestId: req.requestId,
   })
 }
 
