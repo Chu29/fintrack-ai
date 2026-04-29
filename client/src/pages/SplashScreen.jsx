@@ -56,8 +56,8 @@ const SplashScreen = () => {
             </span>
           </h1>
           <p className={auth.heroBody}>
-            Experience the next evolution of personal finance. FinTrack AI turns
-            complex data into editorial insights, crafting your financial
+            Experience the next evolution of personal finance. FinTrack turns
+            complex data into actionable insights, crafting your financial
             journey with precision.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">

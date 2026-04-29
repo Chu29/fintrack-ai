@@ -8,9 +8,7 @@ import AmountField from './_components/AmountField'
 import TransactionMetaFields from './_components/TransactionMetaFields'
 import RecurringExpenseCard from './_components/RecurringExpenseCard'
 import InternalNotesField from './_components/InternalNotesField'
-import ReceiptIntelligencePanel from './_components/ReceiptIntelligencePanel'
 import ExpenseActions from './_components/ExpenseActions'
-import { receiptInsight } from './addExpenseData'
 import { createExpense } from '../../shared/api/expensesApi'
 import { getCategories } from '../../shared/api/categoriesApi'
 import { useAuth } from '../../shared/auth/AuthContext.jsx'
@@ -162,7 +160,6 @@ const AddExpense = () => {
         </div>
 
         <div className="space-y-6">
-          <ReceiptIntelligencePanel {...receiptInsight} />
           <ExpenseActions onDiscard={handleDiscard} isSubmitting={isSubmitting} />
         </div>
       </form>

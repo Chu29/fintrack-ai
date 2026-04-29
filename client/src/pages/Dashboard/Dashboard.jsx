@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import MetricCard from './_components/MetricCard'
 import BalanceHeroCard from './_components/BalanceHeroCard'
 import SpendingChart from './_components/SpendingChart'
-import AlertPanel from './_components/AlertPanel'
 import BudgetTracker from './_components/BudgetTracker'
 import TransactionsTable from './_components/TransactionsTable'
-import { alertPanel } from './dashboardData'
 import AppShell from '../_components/AppShell'
 import {
   dashboardSidebarAction,
@@ -192,9 +190,8 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="mt-6">
         <SpendingChart series={spendingSeries} />
-        <AlertPanel {...alertPanel} />
       </div>
 
       {error ? (

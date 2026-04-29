@@ -5,7 +5,7 @@ import {
   getNavigationItems,
 } from '../_components/appShellData'
 import ReportsFilterRail from './_components/ReportsFilterRail'
-import ExecutiveSummaryCard from './_components/ExecutiveSummaryCard'
+import FinancialPerformanceCard from './_components/FinancialPerformanceCard'
 import SpendingComparisonChart from './_components/SpendingComparisonChart'
 import SpendingBreakdownCard from './_components/SpendingBreakdownCard'
 import WealthAccumulationCard from './_components/WealthAccumulationCard'
@@ -24,10 +24,10 @@ const Reports = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [reportFilters, setReportFilters] = useState(defaultFilters)
-  const [executiveSummary, setExecutiveSummary] = useState({
-    eyebrow: 'Executive Summary',
-    status: 'Analysis Active',
-    insight: 'Generating insights...',
+  const [performanceSummary, setPerformanceSummary] = useState({
+    eyebrow: 'Performance Summary',
+    status: 'Live Status',
+    insight: 'Loading report data...',
     performance: [
       { label: 'Forecast', value: 'Pending', tone: 'positive' },
       { label: 'Alert', value: 'Monitor', tone: 'warning' },
@@ -117,8 +117,8 @@ const Reports = () => {
             color: item.color,
           })),
         })
-        setExecutiveSummary({
-          eyebrow: `Executive Summary: ${monthLabel(month)} ${year}`,
+        setPerformanceSummary({
+          eyebrow: `Performance Summary: ${monthLabel(month)} ${year}`,
           status: 'Live Data',
           insight: `Your current month spend is ${formatCurrency(
             latestMonthSpend
@@ -198,7 +198,7 @@ const Reports = () => {
         <ReportsFilterRail filters={reportFilters} />
 
         <div className="space-y-6">
-          <ExecutiveSummaryCard {...executiveSummary} />
+          <FinancialPerformanceCard {...performanceSummary} />
           {hasReportData ? (
             <SpendingComparisonChart {...spendingComparison} />
           ) : (

@@ -79,7 +79,7 @@ const CreateAccount = () => {
 
       <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-130 flex-col items-center justify-center">
         <header className="mb-8 text-center">
-          <p className={auth.brand}>Fintrack AI</p>
+          <p className={auth.brand}>Fintrack</p>
           <p className={auth.brandSub}>The Digital Curator</p>
         </header>
         <SignUp
