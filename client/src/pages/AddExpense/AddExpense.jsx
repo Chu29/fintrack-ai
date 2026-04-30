@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import AppShell from '../_components/AppShell'
-import {
-  getNavigationItems,
-} from '../_components/appShellData'
+import { getNavigationItems } from '../_components/appShellData'
 import AddExpenseHeader from './_components/AddExpenseHeader'
 import AmountField from './_components/AmountField'
 import TransactionMetaFields from './_components/TransactionMetaFields'
@@ -15,7 +13,6 @@ import { useAuth } from '../../shared/auth/AuthContext.jsx'
 import { toProfile } from '../../shared/uiData'
 
 const initialFormData = {
-  amount: '0.00',
   category: '',
   date: '',
   recurring: false,
@@ -100,7 +97,9 @@ const AddExpense = () => {
       await createExpense({
         amount: formData.amount,
         categoryId: formData.category || null,
-        spentAt: formData.date ? new Date(formData.date).toISOString() : new Date().toISOString(),
+        spentAt: formData.date
+          ? new Date(formData.date).toISOString()
+          : new Date().toISOString(),
         note: formData.notes || null,
       })
 
@@ -160,7 +159,10 @@ const AddExpense = () => {
         </div>
 
         <div className="space-y-6">
-          <ExpenseActions onDiscard={handleDiscard} isSubmitting={isSubmitting} />
+          <ExpenseActions
+            onDiscard={handleDiscard}
+            isSubmitting={isSubmitting}
+          />
         </div>
       </form>
     </AppShell>
