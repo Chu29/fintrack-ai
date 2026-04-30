@@ -7,7 +7,6 @@ import CategoryBudgetGrid from './_components/CategoryBudgetGrid'
 import CategoryModal from './_components/CategoryModal'
 import BudgetModal from './_components/BudgetModal'
 import ConfirmModal from '../_components/ConfirmModal'
-import { categoriesFooterNote } from './categoriesData'
 import {
   createCategory,
   getCategories,
@@ -303,7 +302,7 @@ const Categories = () => {
           isSubmitting={isSubmitting}
         />
         <p className="pt-1 text-center text-[0.62rem] font-bold uppercase tracking-[0.28em] text-slate-400">
-          {categoriesFooterNote}
+          FINTRACK • BUDGET LEDGER ENGINE • ALLOCATION TRACKING ACTIVE
         </p>
       </div>
 
