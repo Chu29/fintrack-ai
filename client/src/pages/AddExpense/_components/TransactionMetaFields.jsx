@@ -1,7 +1,6 @@
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded'
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded'
 import { cx, appStyles as ui } from '../../_components/appStyles'
 
 const TransactionMetaFields = ({
@@ -16,10 +15,6 @@ const TransactionMetaFields = ({
       <div>
         <div className={cx(ui.layout.between, 'mb-3 gap-3')}>
           <p className={ui.form.sectionLabel}>Category</p>
-          <span className={ui.badge.accent}>
-            <AutoAwesomeRoundedIcon fontSize="inherit" />
-            AI Suggest
-          </span>
         </div>
 
         <label className={cx(ui.form.field, 'relative')}>
