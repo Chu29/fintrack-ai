@@ -8,7 +8,12 @@ import CategoryModal from './_components/CategoryModal'
 import BudgetModal from './_components/BudgetModal'
 import ConfirmModal from '../_components/ConfirmModal'
 import { categoriesFooterNote } from './categoriesData'
-import { createCategory, getCategories, updateCategory, deleteCategory } from '../../shared/api/categoriesApi'
+import {
+  createCategory,
+  getCategories,
+  updateCategory,
+  deleteCategory,
+} from '../../shared/api/categoriesApi'
 import { getBudgets, upsertBudget } from '../../shared/api/budgetsApi'
 import { formatCurrency, toProfile } from '../../shared/uiData'
 import { useAuth } from '../../shared/auth/AuthContext.jsx'
@@ -23,6 +28,20 @@ const Categories = () => {
   const [error, setError] = useState('')
   const [categories, setCategories] = useState([])
   const [budgets, setBudgets] = useState([])
+
+  // Refresh budgets function
+  const refreshBudgets = async () => {
+    const now = new Date()
+    const month = now.getUTCMonth() + 1
+    const year = now.getUTCFullYear()
+
+    try {
+      const budgetList = await getBudgets({ month, year })
+      setBudgets(budgetList || [])
+    } catch (error) {
+      console.error('Failed to refresh budgets:', error)
+    }
+  }
 
   // Modal states
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
@@ -57,7 +76,9 @@ const Categories = () => {
           return
         }
 
-        setError(fetchError?.error?.message || 'Failed to load categories and budgets')
+        setError(
+          fetchError?.error?.message || 'Failed to load categories and budgets',
+        )
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -70,6 +91,15 @@ const Categories = () => {
     return () => {
       isMounted = false
     }
+  }, [])
+
+  // Refresh budgets every 30 seconds to get latest spending data
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshBudgets()
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
   }, [])
 
   const handleOpenCreateModal = () => {
@@ -104,7 +134,7 @@ const Categories = () => {
       if (selectedCategory) {
         const updated = await updateCategory(selectedCategory.id, data)
         setCategories((prev) =>
-          prev.map((c) => (c.id === selectedCategory.id ? updated : c))
+          prev.map((c) => (c.id === selectedCategory.id ? updated : c)),
         )
       } else {
         const category = await createCategory({
@@ -114,6 +144,8 @@ const Categories = () => {
         setCategories((prev) => [category, ...prev])
       }
       setIsCategoryModalOpen(false)
+      // Refresh budgets to ensure spending data is up to date
+      await refreshBudgets()
     } catch (createError) {
       setError(createError?.error?.message || 'Failed to save category')
     } finally {
@@ -130,7 +162,9 @@ const Categories = () => {
     try {
       await deleteCategory(selectedCategory.id)
       setCategories((prev) => prev.filter((c) => c.id !== selectedCategory.id))
-      setBudgets((prev) => prev.filter((b) => b.categoryId !== selectedCategory.id))
+      setBudgets((prev) =>
+        prev.filter((b) => b.categoryId !== selectedCategory.id),
+      )
       setIsConfirmDeleteOpen(false)
     } catch (deleteError) {
       setError(deleteError?.error?.message || 'Failed to delete category')
@@ -158,13 +192,17 @@ const Categories = () => {
       })
 
       setBudgets((prev) => {
-        const index = prev.findIndex((b) => b.categoryId === selectedCategory.id)
+        const index = prev.findIndex(
+          (b) => b.categoryId === selectedCategory.id,
+        )
         if (index > -1) {
           return prev.map((b, i) => (i === index ? updated : b))
         }
         return [...prev, updated]
       })
       setIsBudgetModalOpen(false)
+      // Refresh budgets to ensure spending data is up to date
+      await refreshBudgets()
     } catch (budgetError) {
       setError(budgetError?.error?.message || 'Failed to set budget')
     } finally {
@@ -175,10 +213,11 @@ const Categories = () => {
   const budgetOverviewCards = useMemo(() => {
     const totalBudget = budgets.reduce(
       (sum, budget) => sum + Number(budget.limitAmount || 0),
-      0
+      0,
     )
     const overLimit = budgets.filter(
-      (budget) => Number(budget.actualSpent || 0) > Number(budget.limitAmount || 0)
+      (budget) =>
+        Number(budget.actualSpent || 0) > Number(budget.limitAmount || 0),
     )
 
     return [
@@ -200,26 +239,20 @@ const Categories = () => {
             ? overLimit.map((item) => item.category?.name).join(', ')
             : 'All categories are on track',
       },
-      {
-        id: 'suggested-savings',
-        type: 'savings',
-        eyebrow: 'AI Suggested Savings',
-        title: overLimit.length ? 'Reduce overspend this month' : 'Keep current strategy',
-        detail: overLimit.length
-          ? `Review ${overLimit.length} over-budget categories.`
-          : 'No over-budget categories detected.',
-      },
     ]
   }, [budgets])
 
   const budgetCategories = useMemo(() => {
-    const budgetMap = new Map(budgets.map((budget) => [budget.categoryId, budget]))
+    const budgetMap = new Map(
+      budgets.map((budget) => [budget.categoryId, budget]),
+    )
 
     return categories.map((category, index) => {
       const budget = budgetMap.get(category.id)
       const limit = Number(budget?.limitAmount || 0)
       const spent = Number(budget?.actualSpent || 0)
-      const progress = limit > 0 ? Math.round(Math.min((spent / limit) * 100, 100)) : 0
+      const progress =
+        limit > 0 ? Math.round(Math.min((spent / limit) * 100, 100)) : 0
 
       return {
         id: category.id,
@@ -229,10 +262,14 @@ const Categories = () => {
         tag: limit > 0 ? `${progress}% Reached` : 'No Budget',
         tagTone: progress >= 90 ? 'warning' : limit > 0 ? 'accent' : 'neutral',
         progress,
-        progressTone: progress >= 90 ? 'warning' : progress > 0 ? 'accent' : 'ink',
+        progressTone:
+          progress >= 90 ? 'warning' : progress > 0 ? 'accent' : 'ink',
         sliderPosition: Math.max(8, progress || 20),
         limit: formatCurrency(limit),
-        overlineValue: limit > 0 ? `${formatCurrency(spent)} / ${formatCurrency(limit)}` : undefined,
+        overlineValue:
+          limit > 0
+            ? `${formatCurrency(spent)} / ${formatCurrency(limit)}`
+            : undefined,
       }
     })
   }, [budgets, categories])
@@ -244,12 +281,17 @@ const Categories = () => {
       searchPlaceholder="Search categories..."
     >
       <div className="space-y-6">
-        <CategoriesHeader onCreateCategory={handleOpenCreateModal} isSubmitting={isSubmitting} />
+        <CategoriesHeader
+          onCreateCategory={handleOpenCreateModal}
+          isSubmitting={isSubmitting}
+        />
         {isLoading ? (
           <p className="text-sm text-slate-500">Loading categories...</p>
         ) : null}
         {error ? (
-          <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</p>
+          <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">
+            {error}
+          </p>
         ) : null}
         <BudgetOverviewRow items={budgetOverviewCards} />
         <CategoryBudgetGrid
@@ -266,7 +308,7 @@ const Categories = () => {
       </div>
 
       <CategoryModal
-        key={isCategoryModalOpen ? (selectedCategory?.id || 'new') : 'closed'}
+        key={isCategoryModalOpen ? selectedCategory?.id || 'new' : 'closed'}
         isOpen={isCategoryModalOpen}
         onClose={() => setIsCategoryModalOpen(false)}
         onSave={handleSaveCategory}
@@ -275,7 +317,9 @@ const Categories = () => {
       />
 
       <BudgetModal
-        key={isBudgetModalOpen ? (selectedCategory?.id || 'budget') : 'budget-closed'}
+        key={
+          isBudgetModalOpen ? selectedCategory?.id || 'budget' : 'budget-closed'
+        }
         isOpen={isBudgetModalOpen}
         onClose={() => setIsBudgetModalOpen(false)}
         onSave={handleSaveBudget}
