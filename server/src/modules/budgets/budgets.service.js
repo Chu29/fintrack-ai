@@ -5,6 +5,7 @@ import {
   findBudgetByIdAndUserId,
   findCategoryByIdAndUserId,
   listBudgetsByUserAndMonth,
+  listBudgetsWithSpendingByUserAndMonth,
   upsertBudgetByScope,
 } from './budgets.repository.js'
 
@@ -16,6 +17,7 @@ function serializeBudget(budget) {
   return {
     ...budget,
     limitAmount: budget.limitAmount.toString(),
+    actualSpent: budget.actualSpent?.toString() || '0',
   }
 }
 
@@ -28,7 +30,7 @@ async function assertCategoryOwnership(userId, categoryId) {
 
 export async function listBudgets(authUser, query) {
   const user = await getCurrentUser(authUser)
-  const budgets = await listBudgetsByUserAndMonth({
+  const budgets = await listBudgetsWithSpendingByUserAndMonth({
     userId: user.id,
     month: query.month,
     year: query.year,
@@ -56,7 +58,7 @@ export async function upsertUserBudget(authUser, input) {
       throw new AppError(
         409,
         'Budget already exists for category and month/year',
-        'BUDGET_SCOPE_CONFLICT'
+        'BUDGET_SCOPE_CONFLICT',
       )
     }
 
