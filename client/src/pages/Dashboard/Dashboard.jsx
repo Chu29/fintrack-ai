@@ -42,11 +42,12 @@ const Dashboard = () => {
         const month = now.getUTCMonth() + 1
         const year = now.getUTCFullYear()
 
-        const [trendResponse, budgetResponse, expensesResponse] = await Promise.all([
-          getMonthlyTrend({ year }),
-          getBudgetVsActual({ month, year }),
-          getExpenses({ page: 1, pageSize: 8 }),
-        ])
+        const [trendResponse, budgetResponse, expensesResponse] =
+          await Promise.all([
+            getMonthlyTrend({ year }),
+            getBudgetVsActual({ month, year }),
+            getExpenses({ page: 1, pageSize: 8 }),
+          ])
 
         if (!isMounted) {
           return
@@ -60,16 +61,20 @@ const Dashboard = () => {
         const budgetVsActual = budgetResponse.budgetVsActual || []
         const totalBudget = budgetVsActual.reduce(
           (sum, item) => sum + Number(item.limitAmount || 0),
-          0
+          0,
         )
         const totalSpent = budgetVsActual.reduce(
           (sum, item) => sum + Number(item.actualSpent || 0),
-          0
+          0,
         )
         const monthlyIncome = totalBudget * 1.25
         const savings = Math.max(monthlyIncome - totalSpent, 0)
 
-        setSpendingSeries(trend.length ? trend : [{ month: monthLabel(month), value: totalSpent }])
+        setSpendingSeries(
+          trend.length
+            ? trend
+            : [{ month: monthLabel(month), value: totalSpent }],
+        )
         setBudgetItems(
           budgetVsActual.map((item) => {
             const limit = Number(item.limitAmount || 0)
@@ -84,7 +89,7 @@ const Dashboard = () => {
               accent:
                 ratio > 90 ? '#d0674f' : ratio > 70 ? '#f2b861' : '#39d6cf',
             }
-          })
+          }),
         )
         setTransactions(
           (expensesResponse.expenses || []).map((expense) => ({
@@ -97,13 +102,12 @@ const Dashboard = () => {
             }),
             amount: `-${formatCurrency(expense.amount)}`,
             type: 'expense',
-            icon:
-              expense.category?.name?.toLowerCase().includes('transport')
-                ? 'fuel'
-                : expense.category?.name?.toLowerCase().includes('entertain')
-                  ? 'movies'
-                  : 'cart',
-          }))
+            icon: expense.category?.name?.toLowerCase().includes('transport')
+              ? 'fuel'
+              : expense.category?.name?.toLowerCase().includes('entertain')
+                ? 'movies'
+                : 'cart',
+          })),
         )
         setTotals({
           totalBudget,
@@ -138,7 +142,7 @@ const Dashboard = () => {
       expenses: formatCurrency(totals.totalSpent),
       savings: formatCurrency(totals.savings),
     }),
-    [totals]
+    [totals],
   )
 
   const statCards = useMemo(
@@ -162,7 +166,7 @@ const Dashboard = () => {
         tone: 'negative',
       },
     ],
-    [totals]
+    [totals],
   )
 
   if (isLoading) {
@@ -183,26 +187,47 @@ const Dashboard = () => {
       primaryAction={dashboardSidebarAction}
       profile={profile}
     >
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_repeat(3,minmax(0,1fr))]">
-        <BalanceHeroCard {...balanceSummary} />
-        {statCards.map((card) => (
-          <MetricCard key={card.title} {...card} />
-        ))}
-      </div>
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* Error Messages */}
+        {error ? (
+          <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+            <p className="text-sm text-rose-600">{error}</p>
+          </div>
+        ) : null}
 
-      <div className="mt-6">
-        <SpendingChart series={spendingSeries} />
-      </div>
+        {/* Top Section - Balance and Metrics */}
+        <div className="space-y-6">
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_repeat(3,minmax(0,1fr))]">
+            <BalanceHeroCard {...balanceSummary} />
+            {statCards.map((card) => (
+              <MetricCard key={card.title} {...card} />
+            ))}
+          </div>
+        </div>
 
-      {error ? (
-        <p className="mt-6 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">
-          {error}
-        </p>
-      ) : null}
+        {/* Chart Section */}
+        <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+          <SpendingChart series={spendingSeries} />
+        </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-        <BudgetTracker items={budgetItems} />
-        <TransactionsTable items={transactions} />
+        {/* Bottom Section - Budget and Transactions */}
+        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+          {/* Budget Tracker */}
+          <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+            <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+              Budget Overview
+            </h3>
+            <BudgetTracker items={budgetItems} />
+          </div>
+
+          {/* Recent Transactions */}
+          <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+            <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+              Recent Transactions
+            </h3>
+            <TransactionsTable items={transactions} />
+          </div>
+        </div>
       </div>
     </AppShell>
   )
