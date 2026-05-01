@@ -279,33 +279,63 @@ const Categories = () => {
       profile={profile}
       searchPlaceholder="Search categories..."
     >
-      <div className="space-y-6">
-        <CategoriesHeader
-          onCreateCategory={handleOpenCreateModal}
-          isSubmitting={isSubmitting}
-        />
-        {isLoading ? (
-          <p className="text-sm text-slate-500">Loading categories...</p>
-        ) : null}
-        {error ? (
-          <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">
-            {error}
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* Header Section */}
+        <div className="text-center">
+          <CategoriesHeader
+            onCreateCategory={handleOpenCreateModal}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+
+        {/* Status Messages */}
+        <div className="space-y-3">
+          {isLoading ? (
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <p className="text-sm text-dashboard-secondary">
+                Loading categories...
+              </p>
+            </div>
+          ) : null}
+          {error ? (
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <p className="text-sm text-rose-600">{error}</p>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Budget Overview Section */}
+        <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+          <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+            Budget Overview
+          </h3>
+          <BudgetOverviewRow items={budgetOverviewCards} />
+        </div>
+
+        {/* Categories Grid Section */}
+        <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+          <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+            Categories & Budgets
+          </h3>
+          <CategoryBudgetGrid
+            items={budgetCategories}
+            onCreateCategory={handleOpenCreateModal}
+            onEditCategory={handleOpenEditModal}
+            onDeleteCategory={handleOpenConfirmDelete}
+            onSetBudget={handleOpenBudgetModal}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+
+        {/* Footer */}
+        <div className="text-center">
+          <p className="text-[0.62rem] font-bold uppercase tracking-[0.28em] text-dashboard-secondary">
+            FINTRACK • BUDGET LEDGER ENGINE • ALLOCATION TRACKING ACTIVE
           </p>
-        ) : null}
-        <BudgetOverviewRow items={budgetOverviewCards} />
-        <CategoryBudgetGrid
-          items={budgetCategories}
-          onCreateCategory={handleOpenCreateModal}
-          onEditCategory={handleOpenEditModal}
-          onDeleteCategory={handleOpenConfirmDelete}
-          onSetBudget={handleOpenBudgetModal}
-          isSubmitting={isSubmitting}
-        />
-        <p className="pt-1 text-center text-[0.62rem] font-bold uppercase tracking-[0.28em] text-slate-400">
-          FINTRACK • BUDGET LEDGER ENGINE • ALLOCATION TRACKING ACTIVE
-        </p>
+        </div>
       </div>
 
+      {/* Modals */}
       <CategoryModal
         key={isCategoryModalOpen ? selectedCategory?.id || 'new' : 'closed'}
         isOpen={isCategoryModalOpen}
