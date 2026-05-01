@@ -76,24 +76,34 @@ const Reports = () => {
         const actual = trend.map((item) => Number(item.totalSpent || 0))
         const budgetTotal = (budgetData.budgetVsActual || []).reduce(
           (sum, item) => sum + Number(item.limitAmount || 0),
-          0
+          0,
         )
         const monthlyBudgetLine = trend.map(() =>
-          Number((budgetTotal > 0 ? budgetTotal : actual.reduce((a, b) => a + b, 0) / 12).toFixed(2))
+          Number(
+            (budgetTotal > 0
+              ? budgetTotal
+              : actual.reduce((a, b) => a + b, 0) / 12
+            ).toFixed(2),
+          ),
         )
 
         const breakdownSource = spendingData.spendingByCategory || []
         const totalSpent = breakdownSource.reduce(
           (sum, item) => sum + Number(item.totalSpent || 0),
-          0
+          0,
         )
         const breakdownSeries = breakdownSource.map((item, index) => ({
           label: item.name,
           value:
             totalSpent > 0
-              ? Math.max(1, Math.round((Number(item.totalSpent || 0) / totalSpent) * 100))
+              ? Math.max(
+                  1,
+                  Math.round((Number(item.totalSpent || 0) / totalSpent) * 100),
+                )
               : 0,
-          color: item.color || ['#3d4b60', '#d49857', '#4f7d74', '#9b8de0'][index % 4],
+          color:
+            item.color ||
+            ['#3d4b60', '#d49857', '#4f7d74', '#9b8de0'][index % 4],
         }))
 
         const cumulative = []
@@ -104,7 +114,8 @@ const Reports = () => {
         }, 0)
 
         const latestMonthSpend = actual[actual.length - 1] || 0
-        const latestMonthBudget = monthlyBudgetLine[monthlyBudgetLine.length - 1] || 0
+        const latestMonthBudget =
+          monthlyBudgetLine[monthlyBudgetLine.length - 1] || 0
         const adherence =
           latestMonthBudget > 0
             ? Math.round((1 - latestMonthSpend / latestMonthBudget) * 100)
@@ -121,13 +132,15 @@ const Reports = () => {
           eyebrow: `Performance Summary: ${monthLabel(month)} ${year}`,
           status: 'Live Data',
           insight: `Your current month spend is ${formatCurrency(
-            latestMonthSpend
+            latestMonthSpend,
           )} against a budget of ${formatCurrency(latestMonthBudget)}.`,
           performance: [
             {
               label: 'Forecast',
-              value: latestMonthSpend <= latestMonthBudget ? 'Positive' : 'At Risk',
-              tone: latestMonthSpend <= latestMonthBudget ? 'positive' : 'warning',
+              value:
+                latestMonthSpend <= latestMonthBudget ? 'Positive' : 'At Risk',
+              tone:
+                latestMonthSpend <= latestMonthBudget ? 'positive' : 'warning',
             },
             {
               label: 'Adherence',
@@ -177,8 +190,10 @@ const Reports = () => {
   }, [])
 
   const hasReportData = useMemo(
-    () => spendingComparison.months.length > 0 || spendingBreakdown.series.length > 0,
-    [spendingBreakdown.series.length, spendingComparison.months.length]
+    () =>
+      spendingComparison.months.length > 0 ||
+      spendingBreakdown.series.length > 0,
+    [spendingBreakdown.series.length, spendingComparison.months.length],
   )
 
   return (
@@ -188,28 +203,74 @@ const Reports = () => {
       profile={profile}
       searchPlaceholder="Search analytics..."
     >
-      {isLoading ? (
-        <p className="mb-4 text-sm text-slate-500">Loading reports...</p>
-      ) : null}
-      {error ? (
-        <p className="mb-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">{error}</p>
-      ) : null}
-      <div className="grid gap-6 xl:grid-cols-[220px_minmax(0,1fr)]">
-        <ReportsFilterRail filters={reportFilters} />
+      <div className="mx-auto max-w-6xl space-y-8">
+        {/* Status Messages */}
+        <div className="space-y-3">
+          {isLoading ? (
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <p className="text-sm text-dashboard-secondary">
+                Loading reports...
+              </p>
+            </div>
+          ) : null}
+          {error ? (
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <p className="text-sm text-rose-600">{error}</p>
+            </div>
+          ) : null}
+        </div>
 
-        <div className="space-y-6">
-          <FinancialPerformanceCard {...performanceSummary} />
-          {hasReportData ? (
-            <SpendingComparisonChart {...spendingComparison} />
-          ) : (
-            <p className="rounded-2xl bg-white px-4 py-3 text-sm text-slate-500">
-              No report data available for the selected period.
-            </p>
-          )}
+        {/* Main Content Grid */}
+        <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+          {/* Left Column - Filters */}
+          <div className="lg:sticky lg:top-6 lg:h-fit">
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+                Filters
+              </h3>
+              <ReportsFilterRail filters={reportFilters} />
+            </div>
+          </div>
 
-          <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
-            <SpendingBreakdownCard {...spendingBreakdown} />
-            <WealthAccumulationCard {...wealthAccumulation} />
+          {/* Right Column - Reports Content */}
+          <div className="space-y-6">
+            {/* Performance Summary */}
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <FinancialPerformanceCard {...performanceSummary} />
+            </div>
+
+            {/* Spending Comparison Chart */}
+            <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+              <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+                Spending Comparison
+              </h3>
+              {hasReportData ? (
+                <SpendingComparisonChart {...spendingComparison} />
+              ) : (
+                <p className="text-sm text-dashboard-secondary">
+                  No report data available for the selected period.
+                </p>
+              )}
+            </div>
+
+            {/* Bottom Cards Grid */}
+            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+              {/* Spending Breakdown */}
+              <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+                <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+                  Spending Breakdown
+                </h3>
+                <SpendingBreakdownCard {...spendingBreakdown} />
+              </div>
+
+              {/* Wealth Accumulation */}
+              <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
+                <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+                  Wealth Accumulation
+                </h3>
+                <WealthAccumulationCard {...wealthAccumulation} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
