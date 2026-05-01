@@ -14,4 +14,3 @@ export async function logoutSession() {
   const { data } = await http.post('/auth/logout', {})
   return data
 }
-
