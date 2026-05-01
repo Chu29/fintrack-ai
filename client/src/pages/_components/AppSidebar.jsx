@@ -28,53 +28,64 @@ const AppSidebar = ({ navigationItems, primaryAction, profile }) => {
             Main
           </p>
           <nav aria-label="Application navigation" className="grid gap-1">
-          {navigationItems.map((item) => {
-            const Icon = iconMap[item.icon]
-            const Component = item.to ? Link : 'button'
-            const actionProps = item.to ? { to: item.to } : { type: 'button' }
+            {navigationItems.map((item) => {
+              const Icon = iconMap[item.icon]
+              const Component = item.to ? Link : 'button'
+              const actionProps = item.to ? { to: item.to } : { type: 'button' }
 
-            return (
-              <Component
-                key={item.id}
-                className={cx(
-                  'group relative flex items-center gap-3 rounded-r-[10px] px-3 py-2.5 text-left text-[13px] font-medium transition duration-200',
-                  item.active ? ui.surface.navActive : ui.surface.navIdle,
-                )}
-                {...actionProps}
-              >
-                <span
+              return (
+                <Component
+                  key={item.id}
                   className={cx(
-                    'absolute inset-y-1 left-0 w-0.75 origin-left rounded-r bg-dashboard-accent transition duration-200',
-                    item.active ? 'scale-100 opacity-100' : 'scale-0 opacity-0',
+                    'group relative flex items-center gap-3 rounded-r-[10px] px-3 py-2.5 text-left text-[13px] font-medium transition duration-200',
+                    item.active ? ui.surface.navActive : ui.surface.navIdle,
                   )}
-                  aria-hidden="true"
-                />
-                <Icon fontSize="small" />
-                <span>{item.label}</span>
-              </Component>
-            )
-          })}
+                  {...actionProps}
+                >
+                  <span
+                    className={cx(
+                      'absolute inset-y-1 left-0 w-0.75 origin-left rounded-r bg-dashboard-accent transition duration-200',
+                      item.active
+                        ? 'scale-100 opacity-100'
+                        : 'scale-0 opacity-0',
+                    )}
+                    aria-hidden="true"
+                  />
+                  <Icon fontSize="small" />
+                  <span>{item.label}</span>
+                </Component>
+              )
+            })}
           </nav>
         </div>
 
         <div className="mt-auto grid gap-4">
           {primaryAction ? (
             primaryAction.to ? (
-              <Link to={primaryAction.to} className={cx(ui.action.primary, 'h-10 px-4')}>
+              <Link
+                to={primaryAction.to}
+                className={cx(ui.action.primary, 'h-10 px-4')}
+              >
                 {primaryAction.label}
               </Link>
             ) : (
-              <button type="button" className={cx(ui.action.primary, 'h-10 px-4')}>
+              <button
+                type="button"
+                className={cx(ui.action.primary, 'h-10 px-4')}
+              >
                 {primaryAction.label}
               </button>
             )
           ) : null}
 
           <div className={cx(ui.surface.profile, ui.layout.row, 'px-3 py-3')}>
-            <div className={cx(ui.avatar.base, ui.avatar.md)}>{profile.initials}</div>
+            <div className={cx(ui.avatar.base, ui.avatar.md)}>
+              {profile.initials}
+            </div>
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-medium text-white">{profile.name}</p>
-              <p className="text-[11px] text-dashboard-secondary">{profile.role}</p>
+              <p className="truncate text-[13px] font-medium text-white">
+                {profile.name}
+              </p>
             </div>
           </div>
         </div>
