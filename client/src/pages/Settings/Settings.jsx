@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded'
@@ -12,6 +12,15 @@ import {
 import { useAuth } from '../../shared/auth/AuthContext.jsx'
 import { toProfile } from '../../shared/uiData'
 import { updateProfile } from '../../shared/api/profileApi.js'
+import {
+  getThemePreference,
+  getTwoFactorPreference,
+  setThemePreference,
+  setTwoFactorPreference,
+} from '../../shared/storage/preferences.js'
+import { getCategories, deleteCategory } from '../../shared/api/categoriesApi.js'
+import { getExpenses, deleteExpense } from '../../shared/api/expensesApi.js'
+import { getBudgets, deleteBudget } from '../../shared/api/budgetsApi.js'
 
 const badge =
   'inline-flex items-center gap-1 rounded-full px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em]'
@@ -19,17 +28,51 @@ const badge =
 const Settings = () => {
   const auth = useAuth()
   const profile = toProfile(auth)
-  const [minimalInterface, setMinimalInterface] = useState(true)
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+  const currentYear = useMemo(() => new Date().getUTCFullYear(), [])
+  const [themePreference, setThemePreferenceState] = useState(() =>
+    getThemePreference('dark'),
+  )
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(() =>
+    getTwoFactorPreference(false),
+  )
   const [displayName, setDisplayName] = useState(profile.name)
   const [isUpdating, setIsUpdating] = useState(false)
   const [updateMessage, setUpdateMessage] = useState('')
   const [updateError, setUpdateError] = useState('')
+  const [actionMessage, setActionMessage] = useState('')
+  const [actionError, setActionError] = useState('')
+  const [isExporting, setIsExporting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const resolvedTheme = useMemo(() => {
+    if (themePreference === 'system') {
+      if (typeof window === 'undefined') {
+        return 'dark'
+      }
+      return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches
+        ? 'dark'
+        : 'light'
+    }
+    return themePreference
+  }, [themePreference])
+
+  const isDarkMode = resolvedTheme === 'dark'
 
   // Update display name when auth context changes
   useEffect(() => {
     setDisplayName(profile.name)
   }, [profile.name])
+
+  useEffect(() => {
+    setThemePreference(themePreference)
+    if (typeof document !== 'undefined') {
+      document.documentElement.dataset.theme = resolvedTheme || 'dark'
+    }
+  }, [resolvedTheme, themePreference])
+
+  useEffect(() => {
+    setTwoFactorPreference(twoFactorEnabled)
+  }, [twoFactorEnabled])
 
   const handleUpdateProfile = async () => {
     if (!displayName.trim() || displayName === profile.name) {
@@ -57,6 +100,155 @@ const Settings = () => {
     }
   }
 
+  const handleThemeToggle = () => {
+    const nextPreference = resolvedTheme === 'dark' ? 'light' : 'dark'
+    setThemePreferenceState(nextPreference)
+    setActionMessage(
+      `Theme preference set to ${nextPreference === 'dark' ? 'dark' : 'light'} mode.`,
+    )
+    setActionError('')
+  }
+
+  const handleTwoFactorToggle = () => {
+    setTwoFactorEnabled((value) => {
+      const nextValue = !value
+      setActionMessage(
+        `Two-factor authentication ${nextValue ? 'enabled' : 'disabled'} for this device.`,
+      )
+      setActionError('')
+      return nextValue
+    })
+  }
+
+  const fetchAllExpenses = async () => {
+    const allExpenses = []
+    let page = 1
+    const pageSize = 100
+    let totalPages = 1
+
+    while (page <= totalPages) {
+      const response = await getExpenses({ page, pageSize })
+      const expenses = response?.expenses ?? []
+      const pagination = response?.pagination
+
+      allExpenses.push(...expenses)
+      totalPages = pagination?.totalPages ?? 1
+      page += 1
+    }
+
+    return allExpenses
+  }
+
+  const getYearsFromExpenses = (expenses) => {
+    const years = new Set([currentYear])
+    const previousYear = currentYear - 1
+    if (previousYear >= 2000) {
+      years.add(previousYear)
+    }
+    expenses.forEach((expense) => {
+      const expenseYear = new Date(expense.spentAt).getUTCFullYear()
+      if (!Number.isNaN(expenseYear)) {
+        years.add(expenseYear)
+      }
+    })
+
+    return Array.from(years).sort()
+  }
+
+  const fetchBudgetsForYears = async (years) => {
+    const budgets = []
+    for (const year of years) {
+      const results = await Promise.all(
+        Array.from({ length: 12 }, (_, index) =>
+          getBudgets({ month: index + 1, year }).catch(() => []),
+        ),
+      )
+      results.forEach((monthBudgets) => {
+        budgets.push(...monthBudgets)
+      })
+    }
+    return budgets
+  }
+
+  const deleteInBatches = async (items, handler, batchSize = 10) => {
+    for (let index = 0; index < items.length; index += batchSize) {
+      const batch = items.slice(index, index + batchSize)
+      await Promise.all(batch.map((item) => handler(item)))
+    }
+  }
+
+  const handleExportData = async () => {
+    setIsExporting(true)
+    setActionMessage('')
+    setActionError('')
+
+    try {
+      const [categories, expenses] = await Promise.all([
+        getCategories(),
+        fetchAllExpenses(),
+      ])
+      const years = getYearsFromExpenses(expenses)
+      const budgets = await fetchBudgetsForYears(years)
+
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        scope: { years },
+        categories,
+        expenses,
+        budgets,
+      }
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: 'application/json',
+      })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `fintrack-export-${new Date()
+        .toISOString()
+        .slice(0, 10)}.json`
+      link.click()
+      window.URL.revokeObjectURL(url)
+
+      setActionMessage('Your data export is ready.')
+    } catch (error) {
+      setActionError(error?.error?.message || 'Failed to export data')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleDeleteAllData = async () => {
+    const confirmed = window.confirm(
+      'This will permanently delete budgets, expenses, and categories for your account. Continue?',
+    )
+    if (!confirmed) {
+      return
+    }
+
+    setIsDeleting(true)
+    setActionMessage('')
+    setActionError('')
+
+    try {
+      const expenses = await fetchAllExpenses()
+      await deleteInBatches(expenses, (expense) => deleteExpense(expense.id))
+
+      const years = getYearsFromExpenses(expenses)
+      const budgets = await fetchBudgetsForYears(years)
+      await deleteInBatches(budgets, (budget) => deleteBudget(budget.id))
+
+      const categories = await getCategories()
+      await deleteInBatches(categories, (category) => deleteCategory(category.id))
+
+      setActionMessage('All available data has been deleted.')
+    } catch (error) {
+      setActionError(error?.error?.message || 'Failed to delete all data')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <AppShell
       navigationItems={getNavigationItems('settings')}
@@ -72,6 +264,20 @@ const Settings = () => {
             <h1 className={ui.text.pageTitle}>Settings</h1>
           </header>
         </div>
+        {actionMessage || actionError ? (
+          <div className="space-y-3">
+            {actionMessage ? (
+              <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {actionMessage}
+              </div>
+            ) : null}
+            {actionError ? (
+              <div className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-600">
+                {actionError}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         {/* Personal Identity Section */}
         <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
@@ -216,10 +422,10 @@ const Settings = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setMinimalInterface((value) => !value)}
+                onClick={handleThemeToggle}
                 className={cx(
                   ui.form.toggleTrack,
-                  minimalInterface
+                  isDarkMode
                     ? ui.form.toggleTrackOn
                     : ui.form.toggleTrackOff,
                 )}
@@ -228,7 +434,7 @@ const Settings = () => {
                 <span
                   className={cx(
                     ui.form.toggleThumb,
-                    minimalInterface
+                    isDarkMode
                       ? ui.form.toggleThumbOn
                       : ui.form.toggleThumbOff,
                   )}
@@ -245,18 +451,20 @@ const Settings = () => {
                     type="button"
                     className={cx(
                       badge,
-                      theme === 'Dark' && minimalInterface
+                      theme === 'Dark' && themePreference === 'dark'
                         ? 'bg-emerald-100 text-emerald-700'
-                        : theme === 'Light' && !minimalInterface
+                        : theme === 'Light' && themePreference === 'light'
                           ? 'bg-emerald-100 text-emerald-700'
-                          : theme === 'System'
+                          : theme === 'System' && themePreference === 'system'
                             ? 'bg-emerald-100 text-emerald-700'
                             : 'bg-slate-100 text-slate-600',
                     )}
                     onClick={() => {
-                      if (theme === 'Dark') setMinimalInterface(true)
-                      else if (theme === 'Light') setMinimalInterface(false)
-                      // System theme would need additional implementation
+                      if (theme === 'Dark') setThemePreferenceState('dark')
+                      else if (theme === 'Light') setThemePreferenceState('light')
+                      else setThemePreferenceState('system')
+                      setActionMessage(`Theme preference set to ${theme.toLowerCase()}.`)
+                      setActionError('')
                     }}
                   >
                     {theme}
@@ -289,7 +497,7 @@ const Settings = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setTwoFactorEnabled((value) => !value)}
+                onClick={handleTwoFactorToggle}
                 className={cx(
                   ui.form.toggleTrack,
                   twoFactorEnabled
@@ -318,9 +526,15 @@ const Settings = () => {
               </button>
               <button
                 type="button"
-                className={cx(ui.action.secondary, 'h-11 rounded-xl')}
+                onClick={handleExportData}
+                disabled={isExporting || isDeleting}
+                className={cx(
+                  ui.action.secondary,
+                  'h-11 rounded-xl',
+                  (isExporting || isDeleting) && 'opacity-50 cursor-not-allowed',
+                )}
               >
-                Export Data
+                {isExporting ? 'Exporting...' : 'Export Data'}
               </button>
             </div>
           </div>
@@ -360,15 +574,27 @@ const Settings = () => {
             <div className="space-y-3">
               <button
                 type="button"
-                className={cx(ui.action.secondary, 'h-11 w-full rounded-xl')}
+                onClick={handleExportData}
+                disabled={isExporting || isDeleting}
+                className={cx(
+                  ui.action.secondary,
+                  'h-11 w-full rounded-xl',
+                  (isExporting || isDeleting) && 'opacity-50 cursor-not-allowed',
+                )}
               >
-                Download All Data
+                {isExporting ? 'Preparing Export...' : 'Download All Data'}
               </button>
               <button
                 type="button"
-                className={cx(ui.action.danger, 'h-11 w-full rounded-xl')}
+                onClick={handleDeleteAllData}
+                disabled={isDeleting || isExporting}
+                className={cx(
+                  ui.action.danger,
+                  'h-11 w-full rounded-xl',
+                  (isDeleting || isExporting) && 'opacity-50 cursor-not-allowed',
+                )}
               >
-                Delete All Data
+                {isDeleting ? 'Deleting Data...' : 'Delete All Data'}
               </button>
             </div>
           </div>

@@ -4,13 +4,30 @@ import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded'
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded'
 import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded'
 import { cx, appStyles as ui } from '../../_components/appStyles'
+import { monthLabel } from '../../../shared/uiData'
 
 const exportIconMap = {
   pdf: PictureAsPdfRoundedIcon,
   csv: TableViewRoundedIcon,
 }
 
-const ReportsFilterRail = ({ filters }) => {
+const ReportsFilterRail = ({
+  filters,
+  onTimePeriodChange,
+  customRange,
+  onCustomRangeChange,
+}) => {
+  const activeTimePeriod = filters.timePeriods.find((option) => option.active)
+  const isCustomActive = activeTimePeriod?.id === 'custom'
+  const months = Array.from({ length: 12 }, (_, index) => ({
+    value: index + 1,
+    label: monthLabel(index + 1),
+  }))
+  const safeCustomRange = customRange ?? {
+    month: new Date().getUTCMonth() + 1,
+    year: new Date().getUTCFullYear(),
+  }
+
   return (
     <aside className="space-y-4">
       <section className={cx(ui.surface.card)}>
@@ -24,6 +41,7 @@ const ReportsFilterRail = ({ filters }) => {
             <button
               key={option.id}
               type="button"
+              onClick={() => onTimePeriodChange?.(option.id)}
               className={cx(
                 'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-semibold transition duration-200',
                 option.active
@@ -38,6 +56,51 @@ const ReportsFilterRail = ({ filters }) => {
             </button>
           ))}
         </div>
+        {isCustomActive ? (
+          <div className="mt-4 space-y-3">
+            <div>
+              <p className={ui.text.overlineTight}>Month</p>
+              <div className={ui.form.field}>
+                <select
+                  value={safeCustomRange.month}
+                  onChange={(event) =>
+                    onCustomRangeChange?.({
+                      ...safeCustomRange,
+                      month: Number(event.target.value),
+                    })
+                  }
+                  className={ui.form.select}
+                  aria-label="Custom report month"
+                >
+                  {months.map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div>
+              <p className={ui.text.overlineTight}>Year</p>
+              <div className={ui.form.field}>
+                <input
+                  type="number"
+                  min="2000"
+                  max="9999"
+                  value={safeCustomRange.year}
+                  onChange={(event) =>
+                    onCustomRangeChange?.({
+                      ...safeCustomRange,
+                      year: Number(event.target.value),
+                    })
+                  }
+                  className={ui.form.input}
+                  aria-label="Custom report year"
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className={cx(ui.surface.card)}>

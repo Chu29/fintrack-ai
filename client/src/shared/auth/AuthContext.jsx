@@ -13,7 +13,6 @@ import { firebaseAuth } from '../firebaseClient'
 import { createSession, getMe, logoutSession } from '../api/authApi'
 import { getReadableAuthErrorMessage } from './errorMessages'
 import {
-  getCachedUserSession,
   setCachedUserSession,
   getCachedBackendUser,
   setCachedBackendUser,
@@ -41,15 +40,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // Load cached user data if available
     const cachedBackendUser = getCachedBackendUser()
-    const cachedSession = getCachedUserSession()
     const isValidSession = isCachedSessionValid()
 
     if (cachedBackendUser && isValidSession) {
       setBackendUser(cachedBackendUser)
-      // Try to restore Firebase user from cached session
-      if (cachedSession) {
-        setFirebaseUser(cachedSession)
-      }
     }
 
     // Set up network status monitoring

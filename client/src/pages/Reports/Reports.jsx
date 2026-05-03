@@ -23,7 +23,33 @@ const Reports = () => {
   const profile = toProfile(auth)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [reportFilters, setReportFilters] = useState(defaultFilters)
+  const initialDate = useMemo(() => new Date(), [])
+  const currentMonth = initialDate.getUTCMonth() + 1
+  const currentYear = initialDate.getUTCFullYear()
+  const defaultTimePeriodId =
+    defaultFilters.timePeriods.find((option) => option.active)?.id ??
+    defaultFilters.timePeriods[0]?.id
+  const [activeTimePeriodId, setActiveTimePeriodId] = useState(
+    defaultTimePeriodId,
+  )
+  const [customRange, setCustomRange] = useState({
+    month: currentMonth,
+    year: currentYear,
+  })
+  const [reportCategories, setReportCategories] = useState(
+    defaultFilters.categories,
+  )
+  const reportFilters = useMemo(
+    () => ({
+      ...defaultFilters,
+      timePeriods: defaultFilters.timePeriods.map((option) => ({
+        ...option,
+        active: option.id === activeTimePeriodId,
+      })),
+      categories: reportCategories,
+    }),
+    [activeTimePeriodId, reportCategories],
+  )
   const [performanceSummary, setPerformanceSummary] = useState({
     eyebrow: 'Performance Summary',
     status: 'Live Status',
@@ -49,12 +75,53 @@ const Reports = () => {
     months: [],
     values: [],
   })
+  const handleTimePeriodChange = (periodId) => {
+    if (!periodId || periodId === activeTimePeriodId) {
+      return
+    }
+
+    setActiveTimePeriodId(periodId)
+  }
+
+  const handleCustomRangeChange = (range) => {
+    const monthValue = Number(range.month)
+    const yearValue = Number(range.year)
+
+    setCustomRange((prev) => ({
+      month:
+        Number.isFinite(monthValue) && monthValue >= 1 && monthValue <= 12
+          ? monthValue
+          : prev.month,
+      year:
+        Number.isFinite(yearValue) && yearValue >= 2000 && yearValue <= 9999
+          ? yearValue
+          : prev.year,
+    }))
+  }
 
   useEffect(() => {
     let isMounted = true
-    const now = new Date()
-    const month = now.getUTCMonth() + 1
-    const year = now.getUTCFullYear()
+    const resolveReportWindow = () => {
+      if (activeTimePeriodId === 'last-30') {
+        const anchor = new Date(Date.UTC(currentYear, currentMonth - 1, 1))
+        anchor.setUTCDate(anchor.getUTCDate() - 30)
+        return {
+          month: anchor.getUTCMonth() + 1,
+          year: anchor.getUTCFullYear(),
+        }
+      }
+
+      if (activeTimePeriodId === 'custom') {
+        return {
+          month: customRange.month || currentMonth,
+          year: customRange.year || currentYear,
+        }
+      }
+
+      return { month: currentMonth, year: currentYear }
+    }
+
+    const { month, year } = resolveReportWindow()
 
     async function loadReports() {
       setIsLoading(true)
@@ -121,13 +188,12 @@ const Reports = () => {
             ? Math.round((1 - latestMonthSpend / latestMonthBudget) * 100)
             : 0
 
-        setReportFilters({
-          ...defaultFilters,
-          categories: breakdownSeries.map((item) => ({
+        setReportCategories(
+          breakdownSeries.map((item) => ({
             label: item.label,
             color: item.color,
           })),
-        })
+        )
         setPerformanceSummary({
           eyebrow: `Performance Summary: ${monthLabel(month)} ${year}`,
           status: 'Live Data',
@@ -187,7 +253,7 @@ const Reports = () => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [activeTimePeriodId, customRange, currentMonth, currentYear])
 
   const hasReportData = useMemo(
     () =>
@@ -228,7 +294,12 @@ const Reports = () => {
               <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
                 Filters
               </h3>
-              <ReportsFilterRail filters={reportFilters} />
+              <ReportsFilterRail
+                filters={reportFilters}
+                onTimePeriodChange={handleTimePeriodChange}
+                customRange={customRange}
+                onCustomRangeChange={handleCustomRangeChange}
+              />
             </div>
           </div>
 
