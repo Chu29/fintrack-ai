@@ -103,7 +103,7 @@ const AddExpense = () => {
         return
       }
 
-      const normalizedAmount = Number(amountValue.toFixed(2))
+      const normalizedAmount = Math.round(amountValue * 100) / 100
 
       await createExpense({
         amount: normalizedAmount,

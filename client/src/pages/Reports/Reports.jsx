@@ -103,10 +103,7 @@ const Reports = () => {
     let isMounted = true
     const resolveReportWindow = () => {
       if (activeTimePeriodId === 'last-30') {
-        const now = new Date()
-        const anchor = new Date(
-          Date.UTC(currentYear, currentMonth - 1, now.getUTCDate()),
-        )
+        const anchor = new Date(Date.UTC(currentYear, currentMonth - 1, 1))
         anchor.setUTCDate(anchor.getUTCDate() - 30)
         return {
           month: anchor.getUTCMonth() + 1,

@@ -141,8 +141,9 @@ const Settings = () => {
 
   const getYearsFromExpenses = (expenses) => {
     const years = new Set([currentYear])
-    if (currentYear > 2000) {
-      years.add(currentYear - 1)
+    const previousYear = currentYear - 1
+    if (previousYear >= 2000) {
+      years.add(previousYear)
     }
     expenses.forEach((expense) => {
       const expenseYear = new Date(expense.spentAt).getUTCFullYear()
@@ -167,6 +168,13 @@ const Settings = () => {
       })
     }
     return budgets
+  }
+
+  const deleteInBatches = async (items, handler, batchSize = 10) => {
+    for (let index = 0; index < items.length; index += batchSize) {
+      const batch = items.slice(index, index + batchSize)
+      await Promise.all(batch.map((item) => handler(item)))
+    }
   }
 
   const handleExportData = async () => {
@@ -224,20 +232,14 @@ const Settings = () => {
 
     try {
       const expenses = await fetchAllExpenses()
-      for (const expense of expenses) {
-        await deleteExpense(expense.id)
-      }
+      await deleteInBatches(expenses, (expense) => deleteExpense(expense.id))
 
       const years = getYearsFromExpenses(expenses)
       const budgets = await fetchBudgetsForYears(years)
-      for (const budget of budgets) {
-        await deleteBudget(budget.id)
-      }
+      await deleteInBatches(budgets, (budget) => deleteBudget(budget.id))
 
       const categories = await getCategories()
-      for (const category of categories) {
-        await deleteCategory(category.id)
-      }
+      await deleteInBatches(categories, (category) => deleteCategory(category.id))
 
       setActionMessage('All available data has been deleted.')
     } catch (error) {
