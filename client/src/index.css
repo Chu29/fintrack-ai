@@ -62,6 +62,55 @@
   --radius-dashboard-panel: 10px;
 }
 
+:root[data-theme='dark'] {
+  --color-dashboard-page: #0f1222;
+  --color-dashboard-sidebar: #14182a;
+  --color-dashboard-card: #1a1f31;
+  --color-dashboard-elevated: #1f2335;
+  --color-dashboard-inner: #161a2a;
+  --color-dashboard-profile: rgba(255, 255, 255, 0.06);
+  --color-dashboard-control: #1f2335;
+  --color-dashboard-segmented: #1f2335;
+  --color-dashboard-segmented-active: #2a2f45;
+  --color-dashboard-nav-active: rgba(99, 102, 241, 0.22);
+  --color-dashboard-nav-hover: rgba(99, 102, 241, 0.16);
+  --color-dashboard-alert-button: #4f51d3;
+  --color-dashboard-alert-button-hover: #3f41c2;
+  --color-dashboard-ring-inner: #1f2335;
+  --color-dashboard-income-bg: rgba(16, 185, 129, 0.12);
+  --color-dashboard-expense-bg: rgba(239, 68, 68, 0.12);
+  --color-dashboard-ink: #f8fafc;
+  --color-dashboard-on-accent: #ffffff;
+  --color-dashboard-fab-text: #ffffff;
+  --color-dashboard-ghost: #e2e8f0;
+  --color-dashboard-secondary: #94a3b8;
+  --color-dashboard-section: #cbd5f5;
+  --color-dashboard-success: #34d399;
+  --color-dashboard-danger: #f87171;
+  --color-dashboard-accent: #7c81f6;
+  --color-dashboard-accent-strong: #7c81f6;
+  --color-dashboard-accent-end: #6366f1;
+  --color-dashboard-accent-hover-start: #6d70f1;
+  --color-dashboard-accent-hover-end: #575af0;
+  --color-dashboard-accent-soft: #9aa0ff;
+  --color-dashboard-progress-end: #8186f9;
+  --color-dashboard-amber: #262b45;
+  --color-dashboard-amber-soft: #a5b4fc;
+  --color-dashboard-amber-text: #c7d2fe;
+  --color-dashboard-amber-button: #1f2335;
+  --color-dashboard-on-amber: #c7d2fe;
+  --color-dashboard-border: #2b3248;
+  --color-dashboard-border-soft: #232a40;
+  --color-dashboard-border-hover: #3a435f;
+  --color-dashboard-alert-border: #2b3248;
+  --color-dashboard-advice-border: #2b3248;
+  --color-dashboard-amber-border: #3a435f;
+  --shadow-dashboard-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-panel: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-alert: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-advice: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 @layer base {
   html,
   body,

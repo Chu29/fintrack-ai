@@ -20,8 +20,19 @@ export function addNetworkListeners(callback) {
   }
 }
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1'
+
+function getHealthCheckUrl(baseUrl = API_BASE_URL) {
+  if (baseUrl?.startsWith('http://') || baseUrl?.startsWith('https://')) {
+    return new URL('/health', baseUrl).toString()
+  }
+
+  return '/health'
+}
+
 // Check if we can reach the backend server
-export async function checkBackendConnectivity(url = '/api/v1/health') {
+export async function checkBackendConnectivity(url = getHealthCheckUrl()) {
   try {
     const response = await fetch(url, {
       method: 'GET',

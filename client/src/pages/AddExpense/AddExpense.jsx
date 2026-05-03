@@ -13,6 +13,7 @@ import { useAuth } from '../../shared/auth/AuthContext.jsx'
 import { toProfile } from '../../shared/uiData'
 
 const initialFormData = {
+  amount: '',
   category: '',
   date: '',
   recurring: false,
@@ -94,8 +95,18 @@ const AddExpense = () => {
     setErrorMessage('')
 
     try {
+      const amountInput = formData.amount?.toString().trim()
+      const amountValue = Number(amountInput)
+      if (!amountInput || Number.isNaN(amountValue) || amountValue <= 0) {
+        setErrorMessage('Please enter a valid amount greater than 0.')
+        setIsSubmitting(false)
+        return
+      }
+
+      const normalizedAmount = Number(amountValue.toFixed(2))
+
       await createExpense({
-        amount: formData.amount,
+        amount: normalizedAmount,
         categoryId: formData.category || null,
         spentAt: formData.date
           ? new Date(formData.date).toISOString()

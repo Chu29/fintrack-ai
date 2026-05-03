@@ -9,7 +9,7 @@ const AmountField = ({ value, onChange }) => {
         <input
           type="text"
           inputMode="decimal"
-          value={value}
+          value={value ?? ''}
           onChange={onChange}
           placeholder="0.00"
           className={ui.form.amountInput}

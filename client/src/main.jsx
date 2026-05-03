@@ -12,6 +12,18 @@ import Settings from './pages/Settings/Settings.jsx'
 import { AuthProvider } from './shared/auth/AuthContext.jsx'
 import AuthGuard from './shared/auth/AuthGuard.jsx'
 import ApiErrorBoundary from './shared/auth/ApiErrorBoundary.jsx'
+import { getThemePreference } from './shared/storage/preferences'
+
+const themePreference = getThemePreference()
+if (typeof document !== 'undefined') {
+  const resolvedTheme =
+    themePreference === 'system'
+      ? window.matchMedia?.('(prefers-color-scheme: dark)')?.matches
+        ? 'dark'
+        : 'light'
+      : themePreference
+  document.documentElement.dataset.theme = resolvedTheme || 'dark'
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
