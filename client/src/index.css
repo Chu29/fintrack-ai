@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-dashboard-page: #f5f6fa;
+  --color-dashboard-sidebar: #1a1d2e;
+  --color-dashboard-card: #ffffff;
+  --color-dashboard-elevated: #ffffff;
+  --color-dashboard-inner: #ffffff;
+  --color-dashboard-profile: rgba(255, 255, 255, 0.04);
+  --color-dashboard-control: #ffffff;
+  --color-dashboard-segmented: #f3f4f6;
+  --color-dashboard-segmented-active: #ffffff;
+  --color-dashboard-nav-active: rgba(255, 255, 255, 0.08);
+  --color-dashboard-nav-hover: rgba(255, 255, 255, 0.06);
+  --color-dashboard-alert-button: #6366f1;
+  --color-dashboard-alert-button-hover: #575af0;
+  --color-dashboard-ring-inner: #ffffff;
+  --color-dashboard-income-bg: #ecfdf5;
+  --color-dashboard-expense-bg: #fef2f2;
+  --color-dashboard-ink: #1a1d2e;
+  --color-dashboard-on-accent: #ffffff;
+  --color-dashboard-fab-text: #ffffff;
+  --color-dashboard-ghost: #1a1d2e;
+  --color-dashboard-secondary: #9ca3af;
+  --color-dashboard-section: #4b5563;
+  --color-dashboard-success: #10b981;
+  --color-dashboard-danger: #ef4444;
+
+  --color-dashboard-accent: #6366f1;
+  --color-dashboard-accent-strong: #6366f1;
+  --color-dashboard-accent-end: #5255d8;
+  --color-dashboard-accent-hover-start: #5658e6;
+  --color-dashboard-accent-hover-end: #4f51d3;
+  --color-dashboard-accent-soft: #7c81f6;
+  --color-dashboard-progress-end: #7e81f7;
+
+  --color-dashboard-amber: #eef2ff;
+  --color-dashboard-amber-soft: #6366f1;
+  --color-dashboard-amber-text: #6366f1;
+  --color-dashboard-amber-button: #ffffff;
+  --color-dashboard-on-amber: #6366f1;
+
+  --color-dashboard-border: #e5e7eb;
+  --color-dashboard-border-soft: #eef2f7;
+  --color-dashboard-border-hover: #dbe0ea;
+  --color-dashboard-alert-border: #e5e7eb;
+  --color-dashboard-advice-border: #e5e7eb;
+  --color-dashboard-amber-border: #c7d2fe;
+
+  --shadow-dashboard-card: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-dashboard-panel: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-dashboard-alert: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-dashboard-advice: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-dashboard-accent: 0 8px 20px rgba(99, 102, 241, 0.25);
+  --shadow-dashboard-accent-fab: 0 8px 20px rgba(99, 102, 241, 0.25);
+  --shadow-dashboard-amber: 0 8px 16px rgba(99, 102, 241, 0.2);
+  --shadow-dashboard-inset: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
+  --shadow-dashboard-focus: 0 0 0 3px rgba(99, 102, 241, 0.15);
+
+  --radius-dashboard-card: 10px;
+  --radius-dashboard-panel: 10px;
+
+  /* Light mode text colors for consistency */
+  --color-dashboard-text-primary: #1a1d2e;
+  --color-dashboard-text-secondary: #4b5563;
+  --color-dashboard-text-muted: #9ca3af;
+  --color-dashboard-text-inverse: #ffffff;
+}
+
+:root[data-theme='dark'] {
+  --color-dashboard-page: #0f1222;
+  --color-dashboard-sidebar: #14182a;
+  --color-dashboard-card: #1a1f31;
+  --color-dashboard-elevated: #1f2335;
+  --color-dashboard-inner: #161a2a;
+  --color-dashboard-profile: rgba(255, 255, 255, 0.06);
+  --color-dashboard-control: #1f2335;
+  --color-dashboard-segmented: #1f2335;
+  --color-dashboard-segmented-active: #2a2f45;
+  --color-dashboard-nav-active: rgba(99, 102, 241, 0.22);
+  --color-dashboard-nav-hover: rgba(99, 102, 241, 0.16);
+  --color-dashboard-alert-button: #4f51d3;
+  --color-dashboard-alert-button-hover: #3f41c2;
+  --color-dashboard-ring-inner: #1f2335;
+  --color-dashboard-income-bg: rgba(16, 185, 129, 0.12);
+  --color-dashboard-expense-bg: rgba(239, 68, 68, 0.12);
+  --color-dashboard-ink: #f8fafc;
+  --color-dashboard-on-accent: #ffffff;
+  --color-dashboard-fab-text: #ffffff;
+  --color-dashboard-ghost: #e2e8f0;
+  --color-dashboard-secondary: #94a3b8;
+  --color-dashboard-section: #cbd5f5;
+  --color-dashboard-success: #34d399;
+  --color-dashboard-danger: #f87171;
+  --color-dashboard-accent: #7c81f6;
+  --color-dashboard-accent-strong: #7c81f6;
+  --color-dashboard-accent-end: #6366f1;
+  --color-dashboard-accent-hover-start: #6d70f1;
+  --color-dashboard-accent-hover-end: #575af0;
+  --color-dashboard-accent-soft: #9aa0ff;
+  --color-dashboard-progress-end: #8186f9;
+  --color-dashboard-amber: #262b45;
+  --color-dashboard-amber-soft: #a5b4fc;
+  --color-dashboard-amber-text: #c7d2fe;
+  --color-dashboard-amber-button: #1f2335;
+  --color-dashboard-on-amber: #c7d2fe;
+  --color-dashboard-border: #2b3248;
+  --color-dashboard-border-soft: #232a40;
+  --color-dashboard-border-hover: #3a435f;
+  --color-dashboard-alert-border: #2b3248;
+  --color-dashboard-advice-border: #2b3248;
+  --color-dashboard-amber-border: #3a435f;
+  --shadow-dashboard-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-panel: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-alert: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-dashboard-advice: 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  /* Ensure better text contrast in dark mode */
+  --color-dashboard-text-primary: #ffffff;
+  --color-dashboard-text-secondary: #e2e8f0;
+  --color-dashboard-text-muted: #94a3b8;
+  --color-dashboard-text-inverse: #0f1222;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    background: var(--color-dashboard-page);
+    color: var(--color-dashboard-ink);
+  }
+}
+
+@layer utilities {
+  .bg-dashboard-avatar {
+    background-image: linear-gradient(135deg, #6366f1, #8b5cf6);
+  }
+
+  .font-bold,
+  .font-black,
+  .font-extrabold {
+    font-weight: 600 !important;
+  }
+
+  .font-light {
+    font-weight: 400 !important;
+  }
+
+  /* Dark mode text visibility utilities */
+  [data-theme='dark'] .text-white {
+    color: #ffffff !important;
+  }
+
+  [data-theme='dark'] .text-gray-600 {
+    color: #94a3b8 !important;
+  }
+
+  [data-theme='dark'] .text-gray-500 {
+    color: #64748b !important;
+  }
+
+  [data-theme='dark'] .text-gray-400 {
+    color: #475569 !important;
+  }
+
+  /* Ensure all dashboard text colors are visible in dark mode */
+  [data-theme='dark'] .text-dashboard-ink {
+    color: var(--color-dashboard-ink) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-secondary {
+    color: var(--color-dashboard-secondary) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-section {
+    color: var(--color-dashboard-section) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-ghost {
+    color: var(--color-dashboard-ghost) !important;
+  }
+}
