@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -175,6 +176,19 @@ export function AuthProvider({ children }) {
             getReadableAuthErrorMessage(
               error,
               'Unable to create your account right now. Please try again.',
+            ),
+          )
+          throw error
+        }
+      },
+      sendPasswordReset: async (email) => {
+        try {
+          await sendPasswordResetEmail(firebaseAuth, email)
+        } catch (error) {
+          setAuthError(
+            getReadableAuthErrorMessage(
+              error,
+              'Unable to send password reset email. Please try again.',
             ),
           )
           throw error
