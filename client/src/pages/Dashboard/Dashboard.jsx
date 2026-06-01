@@ -211,18 +211,24 @@ const Dashboard = () => {
         </div>
 
         {/* Bottom Section - Budget and Transactions */}
-        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+        <div className="grid gap-6 xl:grid-cols-1fr">
           {/* Budget Tracker */}
           <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
-            <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+            <h3
+              className="mb-4 text-lg font-semibold text-dashboard-ink truncate overflow-hidden whitespace-nowrap"
+              title="Budget Overview"
+            >
               Budget Overview
             </h3>
             <BudgetTracker items={budgetItems} />
           </div>
 
-          {/* Recent Transactions */}
+          {/* Transactions Table */}
           <div className="rounded-2xl border border-dashboard-border bg-dashboard-card p-6 shadow-dashboard-card">
-            <h3 className="mb-4 text-lg font-semibold text-dashboard-ink">
+            <h3
+              className="mb-4 text-lg font-semibold text-dashboard-ink truncate overflow-hidden whitespace-nowrap"
+              title="Recent Transactions"
+            >
               Recent Transactions
             </h3>
             <TransactionsTable items={transactions} />
