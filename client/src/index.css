@@ -60,6 +60,12 @@
 
   --radius-dashboard-card: 10px;
   --radius-dashboard-panel: 10px;
+
+  /* Light mode text colors for consistency */
+  --color-dashboard-text-primary: #1a1d2e;
+  --color-dashboard-text-secondary: #4b5563;
+  --color-dashboard-text-muted: #9ca3af;
+  --color-dashboard-text-inverse: #ffffff;
 }
 
 :root[data-theme='dark'] {
@@ -109,6 +115,12 @@
   --shadow-dashboard-panel: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-dashboard-alert: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-dashboard-advice: 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  /* Ensure better text contrast in dark mode */
+  --color-dashboard-text-primary: #ffffff;
+  --color-dashboard-text-secondary: #e2e8f0;
+  --color-dashboard-text-muted: #94a3b8;
+  --color-dashboard-text-inverse: #0f1222;
 }
 
 @layer base {
@@ -139,5 +151,39 @@
 
   .font-light {
     font-weight: 400 !important;
+  }
+
+  /* Dark mode text visibility utilities */
+  [data-theme='dark'] .text-white {
+    color: #ffffff !important;
+  }
+
+  [data-theme='dark'] .text-gray-600 {
+    color: #94a3b8 !important;
+  }
+
+  [data-theme='dark'] .text-gray-500 {
+    color: #64748b !important;
+  }
+
+  [data-theme='dark'] .text-gray-400 {
+    color: #475569 !important;
+  }
+
+  /* Ensure all dashboard text colors are visible in dark mode */
+  [data-theme='dark'] .text-dashboard-ink {
+    color: var(--color-dashboard-ink) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-secondary {
+    color: var(--color-dashboard-secondary) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-section {
+    color: var(--color-dashboard-section) !important;
+  }
+
+  [data-theme='dark'] .text-dashboard-ghost {
+    color: var(--color-dashboard-ghost) !important;
   }
 }
