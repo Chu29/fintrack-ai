@@ -1,7 +1,7 @@
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 import { cx, appStyles as ui } from './appStyles'
 
-const AppTopBar = ({ profile, pageTitle = 'Dashboard' }) => {
+const AppTopBar = ({ profile }) => {
   const dateLabel = new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -9,11 +9,11 @@ const AppTopBar = ({ profile, pageTitle = 'Dashboard' }) => {
   }).format(new Date())
 
   return (
-    <header className="border-b border-dashboard-border bg-white px-6 py-3.5 xl:ml-52.5">
+    <header className="border-b border-dashboard-border bg-dashboard-card px-6 py-3.5 xl:ml-52.5">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-[15px] font-semibold text-dashboard-ink">{pageTitle}</h1>
+        <div></div>
         <div className="flex items-center gap-3">
-          <span className="inline-flex h-8 items-center rounded-full border border-dashboard-border bg-white px-3 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary">
+          <span className="inline-flex h-8 items-center rounded-full border border-dashboard-border bg-dashboard-control px-3 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary">
             {dateLabel}
           </span>
           <button
@@ -27,7 +27,9 @@ const AppTopBar = ({ profile, pageTitle = 'Dashboard' }) => {
           >
             <NotificationsRoundedIcon fontSize="small" />
           </button>
-          <span className={cx(ui.avatar.base, ui.avatar.sm)}>{profile.initials}</span>
+          <span className={cx(ui.avatar.base, ui.avatar.sm)}>
+            {profile.initials}
+          </span>
         </div>
       </div>
     </header>
