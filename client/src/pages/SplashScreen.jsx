@@ -68,12 +68,6 @@ const SplashScreen = () => {
             >
               Get Started
             </button>
-            <button
-              type="button"
-              className={auth.ctaSecondary}
-            >
-              View Demo
-            </button>
           </div>
           <div className="mt-16 flex flex-wrap items-center gap-x-10 gap-y-3 text-[11px] font-medium uppercase tracking-[0.08em] text-dashboard-secondary">
             <span>Secured by Obsidian</span>
