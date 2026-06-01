@@ -99,6 +99,39 @@ const Reports = () => {
     }))
   }
 
+  const handleExport = (type) => {
+    if (type === 'csv') {
+      const headers = ['Month', 'Actual Spending', 'Budget Limit']
+      const rows = spendingComparison.months.map((month, index) => [
+        month,
+        spendingComparison.actual[index],
+        spendingComparison.budget[index],
+      ])
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map((row) => row.join(',')),
+      ].join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.setAttribute('href', url)
+      link.setAttribute(
+        'download',
+        `fintrack-report-${activeTimePeriodId}-${new Date()
+          .toISOString()
+          .slice(0, 10)}.csv`,
+      )
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } else {
+      alert(`${type.toUpperCase()} Export coming soon. Please use CSV for now.`)
+    }
+  }
+
   useEffect(() => {
     let isMounted = true
     const resolveReportWindow = () => {
@@ -299,6 +332,7 @@ const Reports = () => {
                 onTimePeriodChange={handleTimePeriodChange}
                 customRange={customRange}
                 onCustomRangeChange={handleCustomRangeChange}
+                onExport={handleExport}
               />
             </div>
           </div>

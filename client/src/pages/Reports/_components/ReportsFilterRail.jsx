@@ -16,6 +16,7 @@ const ReportsFilterRail = ({
   onTimePeriodChange,
   customRange,
   onCustomRangeChange,
+  onExport,
 }) => {
   const activeTimePeriod = filters.timePeriods.find((option) => option.active)
   const isCustomActive = activeTimePeriod?.id === 'custom'
@@ -141,6 +142,7 @@ const ReportsFilterRail = ({
               <button
                 key={item.id}
                 type="button"
+                onClick={() => onExport?.(item.id)}
                 className="flex items-center gap-3 rounded-2xl bg-dashboard-control px-4 py-3 text-left text-sm font-semibold text-slate-700 transition duration-200 hover:bg-dashboard-nav-hover"
               >
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-dashboard-accent shadow-dashboard-card">
