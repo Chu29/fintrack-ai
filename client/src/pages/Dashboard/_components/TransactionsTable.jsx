@@ -3,6 +3,7 @@ import LocalMoviesRoundedIcon from '@mui/icons-material/LocalMoviesRounded'
 import LocalGasStationRoundedIcon from '@mui/icons-material/LocalGasStationRounded'
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import { useNavigate } from 'react-router'
 import { cx, dashboardStyles as ui } from '../dashboardStyles'
 
 const iconMap = {
@@ -13,17 +14,23 @@ const iconMap = {
 }
 
 const TransactionsTable = ({ items }) => {
+  const navigate = useNavigate()
+
   return (
     <section className={cx(ui.surface.card, 'relative pb-18')}>
       <div className={ui.layout.between}>
         <h2 className={ui.text.sectionTitle}>Recent Transactions</h2>
-        <button type="button" className={ui.action.link}>
+        <button
+          type="button"
+          className={ui.action.link}
+          onClick={() => navigate('/reports')}
+        >
           View All
         </button>
       </div>
 
       <div className="mt-5 hidden grid-cols-[minmax(0,1.8fr)_120px] gap-4 border-b border-dashboard-border pb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary md:grid">
-        <span>Transaction</span>        
+        <span>Transaction</span>
         <span className="text-right">Amount</span>
       </div>
 
@@ -53,7 +60,9 @@ const TransactionsTable = ({ items }) => {
                 </span>
 
                 <div className="min-w-0">
-                  <p className={cx(ui.text.label, 'truncate')}>{item.merchant}</p>
+                  <p className={cx(ui.text.label, 'truncate')}>
+                    {item.merchant}
+                  </p>
                   <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.06em] text-dashboard-secondary">
                     {item.dateLabel}
                   </p>
@@ -76,6 +85,7 @@ const TransactionsTable = ({ items }) => {
         type="button"
         className={cx(ui.action.fab, 'absolute bottom-4 right-4')}
         aria-label="Add transaction"
+        onClick={() => navigate('/add-expense')}
       >
         <AddRoundedIcon />
       </button>
