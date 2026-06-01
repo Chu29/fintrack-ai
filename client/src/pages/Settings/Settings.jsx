@@ -18,7 +18,10 @@ import {
   setThemePreference,
   setTwoFactorPreference,
 } from '../../shared/storage/preferences.js'
-import { getCategories, deleteCategory } from '../../shared/api/categoriesApi.js'
+import {
+  getCategories,
+  deleteCategory,
+} from '../../shared/api/categoriesApi.js'
 import { getExpenses, deleteExpense } from '../../shared/api/expensesApi.js'
 import { getBudgets, deleteBudget } from '../../shared/api/budgetsApi.js'
 
@@ -118,6 +121,18 @@ const Settings = () => {
       setActionError('')
       return nextValue
     })
+  }
+
+  const handleChangePassword = async () => {
+    if (!profile.email) return
+
+    try {
+      await auth.sendPasswordReset(profile.email)
+      setActionMessage(`Password reset email sent to ${profile.email}`)
+      setActionError('')
+    } catch (error) {
+      setActionError(error?.message || 'Failed to send password reset email')
+    }
   }
 
   const fetchAllExpenses = async () => {
@@ -239,7 +254,9 @@ const Settings = () => {
       await deleteInBatches(budgets, (budget) => deleteBudget(budget.id))
 
       const categories = await getCategories()
-      await deleteInBatches(categories, (category) => deleteCategory(category.id))
+      await deleteInBatches(categories, (category) =>
+        deleteCategory(category.id),
+      )
 
       setActionMessage('All available data has been deleted.')
     } catch (error) {
@@ -425,18 +442,14 @@ const Settings = () => {
                 onClick={handleThemeToggle}
                 className={cx(
                   ui.form.toggleTrack,
-                  isDarkMode
-                    ? ui.form.toggleTrackOn
-                    : ui.form.toggleTrackOff,
+                  isDarkMode ? ui.form.toggleTrackOn : ui.form.toggleTrackOff,
                 )}
                 aria-label="Toggle dark interface"
               >
                 <span
                   className={cx(
                     ui.form.toggleThumb,
-                    isDarkMode
-                      ? ui.form.toggleThumbOn
-                      : ui.form.toggleThumbOff,
+                    isDarkMode ? ui.form.toggleThumbOn : ui.form.toggleThumbOff,
                   )}
                 />
               </button>
@@ -461,9 +474,12 @@ const Settings = () => {
                     )}
                     onClick={() => {
                       if (theme === 'Dark') setThemePreferenceState('dark')
-                      else if (theme === 'Light') setThemePreferenceState('light')
+                      else if (theme === 'Light')
+                        setThemePreferenceState('light')
                       else setThemePreferenceState('system')
-                      setActionMessage(`Theme preference set to ${theme.toLowerCase()}.`)
+                      setActionMessage(
+                        `Theme preference set to ${theme.toLowerCase()}.`,
+                      )
                       setActionError('')
                     }}
                   >
@@ -520,6 +536,7 @@ const Settings = () => {
             <div className="grid gap-3 lg:grid-cols-2">
               <button
                 type="button"
+                onClick={handleChangePassword}
                 className={cx(ui.action.secondary, 'h-11 rounded-xl')}
               >
                 Change Password
@@ -531,7 +548,8 @@ const Settings = () => {
                 className={cx(
                   ui.action.secondary,
                   'h-11 rounded-xl',
-                  (isExporting || isDeleting) && 'opacity-50 cursor-not-allowed',
+                  (isExporting || isDeleting) &&
+                    'opacity-50 cursor-not-allowed',
                 )}
               >
                 {isExporting ? 'Exporting...' : 'Export Data'}
@@ -579,7 +597,8 @@ const Settings = () => {
                 className={cx(
                   ui.action.secondary,
                   'h-11 w-full rounded-xl',
-                  (isExporting || isDeleting) && 'opacity-50 cursor-not-allowed',
+                  (isExporting || isDeleting) &&
+                    'opacity-50 cursor-not-allowed',
                 )}
               >
                 {isExporting ? 'Preparing Export...' : 'Download All Data'}
@@ -591,7 +610,8 @@ const Settings = () => {
                 className={cx(
                   ui.action.danger,
                   'h-11 w-full rounded-xl',
-                  (isDeleting || isExporting) && 'opacity-50 cursor-not-allowed',
+                  (isDeleting || isExporting) &&
+                    'opacity-50 cursor-not-allowed',
                 )}
               >
                 {isDeleting ? 'Deleting Data...' : 'Delete All Data'}
